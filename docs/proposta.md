@@ -60,7 +60,7 @@ Prover uma plataforma web para criação, visualização e gerenciamento de cron
 
 #### 
 
-#### **12\. Um diagrama com a visão geral** 
+#### **12\. Diagrama com a visão geral** 
 
 \+-------------------------------------------------------+  
 |                    CLIENTE (NAVEGADOR)                	     |  
