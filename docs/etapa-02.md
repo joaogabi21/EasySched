@@ -20,11 +20,10 @@ EasySched/
 │   ├── proposta.md  
 │   └── etapa-02.md                    
 ├── client/  
-│   ├── index.html                   	\< Página 1: Visão Geral e Cronograma  
-│   ├── cadastro-atividade.html      	\< Página 2: Formulário de Atividades e Lembretes  
-│   └── relatorios.html              	\< Página 3: Métricas e Distribuição de Tempo  
-├── README.md  
-└── .gitignore
+│   ├── principal.html                   	\< Página 1: Visão Geral e Cronograma  
+│   ├── atividade.html      	\< Página 2: Formulário de Atividades e Lembretes  
+│   └── relatorio.html              	\< Página 3: Métricas e Distribuição de Tempo  
+├── README.md
 
 ## **3\. Páginas Criadas e Funcionalidades Representadas**
 
