@@ -126,8 +126,7 @@ Será utilizado **SQLite** em ambiente de desenvolvimento local e **PostgreSQL**
 ## **Arquitetura inicial**
 
 A visão inicial da aplicação é:
-
-Plaintext  
+  
 ┌──────────────────────────────────────┐  
 │              Front-end               │  
 │                                      │  
