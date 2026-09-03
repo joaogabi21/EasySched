@@ -203,7 +203,6 @@ O projeto utilizará o Git durante todo o desenvolvimento.
 
 As versões das etapas serão identificadas preferencialmente por tags:
 
-Plaintext  
 etapa-01  
 etapa-02  
 etapa-03  
@@ -220,12 +219,10 @@ final
 
 A documentação do projeto será mantida no diretório:
 
-Plaintext  
 /docs
 
 A documentação inicial inclui:
 
-Plaintext  
 /docs/proposta.md
 
 Novos documentos serão adicionados conforme as etapas do projeto forem concluídas.
