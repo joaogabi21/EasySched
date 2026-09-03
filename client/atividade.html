@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasySched - Cadastrar Nova Atividade</title>
+</head>
+<body>
+
+    <header>
+        <h1>EasySched</h1>
+        
+        <nav aria-label="Navegação principal">
+            <ul>
+                <li><a href="principal.html">Cronograma</a></li>
+                <li><a href="relatorio.html">Relatórios</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <section aria-labelledby="titulo-formulario">
+            <h2 id="titulo-formulario">Cadastrar Nova Atividade</h2>
+            <p>Preencha os dados abaixo para agendar um compromisso e configurar seu lembrete.</p>
+
+            <form action="#" method="post">
+
+                <fieldset>
+                    <legend>Dados da Atividade</legend>
+
+                    <p>
+                        <label for="titulo">Título da Atividade:</label><br>
+                        <input type="text" id="titulo" name="titulo" required placeholder="Ex.: Aula de Inglês">
+                    </p>
+
+                    <p>
+                        <label for="descricao">Descrição / Detalhes:</label><br>
+                        <textarea id="descricao" name="descricao" rows="4" cols="40" placeholder="Escreva os detalhes ou metas deste compromisso..."></textarea>
+                    </p>
+
+                    <p>
+                        <label for="data">Data do Compromisso:</label><br>
+                        <input type="date" id="data" name="data" required>
+                    </p>
+
+                    <p>
+                        <label for="hora-inicio">Horário de Início:</label><br>
+                        <input type="time" id="hora-inicio" name="hora-inicio" required>
+                    </p>
+
+                    <p>
+                        <label for="hora-fim">Horário de Término:</label><br>
+                        <input type="time" id="hora-fim" name="hora-fim" required>
+                    </p>
+
+                    <p>
+                        <label for="categoria">Categoria:</label><br>
+                        <select id="categoria" name="categoria" required>
+                            <option value="">-- Selecione uma Categoria --</option>
+                            <option value="estudos">Estudos</option>
+                            <option value="trabalho">Trabalho / Projetos</option>
+                            <option value="saude">Saúde / Esportes</option>
+                            <option value="lazer">Lazer</option>
+                        </select>
+                    </p>
+
+                    <p>
+                        <label for="status">Status Inicial:</label><br>
+                        <select id="status" name="status" required>
+                            <option value="pendente" selected>Pendente</option>
+                            <option value="em_andamento">Em Andamento</option>
+                            <option value="concluido">Concluído</option>
+                        </select>
+                    </p>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Configuração de Lembrete e Notificação</legend>
+
+                    <p>
+                        <input type="checkbox" id="ativar-lembrete" name="ativar-lembrete" value="sim" checked>
+                        <label for="ativar-lembrete">Ativar alerta para este compromisso</label>
+                    </p>
+
+                    <p>
+                        <label for="antecedencia">Tempo de Antecedência para o Alerta:</label><br>
+                        <select id="antecedencia" name="antecedencia">
+                            <option value="5">5 minutos antes</option>
+                            <option value="15" selected>15 minutos antes</option>
+                            <option value="30">30 minutos antes</option>
+                            <option value="60">1 hora antes</option>
+                        </select>
+                    </p>
+
+                    <p>
+                        <label for="canal-alerta">Canal de Notificação:</label><br>
+                        <select id="canal-alerta" name="canal-alerta">
+                            <option value="web_notification">Web Notifications API (Navegador)</option>
+                            <option value="interface">Aviso Visual na Interface</option>
+                        </select>
+                    </p>
+                </fieldset>
+
+                <div>
+                    <button type="submit">Salvar Atividade</button>
+                    <button type="reset">Limpar Campos</button>
+                    <a href="principal.html">Cancelar</a>
+                </div>
+
+            </form>
+        </section>
+
+    </main>
+
+    <footer>
+        <p><strong>EasySched</strong> - Gestão Integrada de Cronogramas e Lembretes.</p>
+        <p>Projeto de apoio à organização pessoal. Licença Educacional.</p>
+    </footer>
+
+</body>
+</html>

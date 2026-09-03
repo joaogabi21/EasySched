@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasySched - Visão Geral do Cronograma</title>
+</head>
+<body>
+
+    <header>
+        <h1>EasySched</h1>
+        
+        <nav aria-label="Navegação principal">
+            <ul>
+                <li><a href="atividade.html">Nova Atividade</a></li>
+                <li><a href="relatorio.html">Relatórios</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <section aria-labelledby="titulo-resumo">
+            <h2 id="titulo-resumo">Resumo de Hoje</h2>
+            <ul>
+                <li><strong>Total de Atividades:</strong> 4</li>
+                <li><strong>Concluídas:</strong> 1</li>
+                <li><strong>Em Andamento:</strong> 1</li>
+                <li><strong>Pendentes:</strong> 2</li>
+            </ul>
+        </section>
+
+        <section aria-labelledby="titulo-cronograma">
+            <h2 id="titulo-cronograma">Cronograma Diário</h2>
+
+            <article>
+                <header>
+                    <h3>Revisão de Estrutura de Dados</h3>
+                    <p>
+                        Horário: 
+                        <time datetime="08:00">08:00</time> às 
+                        <time datetime="10:00">10:00</time>
+                    </p>
+                </header>
+                <p><strong>Categoria:</strong> <mark>Estudos</mark></p>
+                <p><strong>Status:</strong> Concluído</p>
+                <p>Revisão de conceitos de algoritmos e grafos.</p>
+                <footer>
+                    <button type="button">Editar</button>
+                    <button type="button">Excluir</button>
+                </footer>
+            </article>
+
+            <article>
+                <header>
+                    <h3>Desenvolvimento de Projeto</h3>
+                    <p>
+                        Horário: 
+                        <time datetime="10:30">10:30</time> às 
+                        <time datetime="13:30">12:30</time>
+                    </p>
+                </header>
+                <p><strong>Categoria:</strong> <mark>Trabalho / Projetos</mark></p>
+                <p><strong>Status:</strong> Em Andamento</p>
+                <p>Codificação das páginas para o projeto EasySched utilizando HTML semântico.</p>
+                <footer>
+                    <button type="button">Concluir</button>
+                    <button type="button">Editar</button>
+                    <button type="button">Excluir</button>
+                </footer>
+            </article>
+
+            <article>
+                <header>
+                    <h3>Treino de Calistenia e Corrida</h3>
+                    <p>
+                        Horário: 
+                        <time datetime="17:00">17:00</time> às 
+                        <time datetime="18:45">18:15</time>
+                    </p>
+                </header>
+                <p><strong>Categoria:</strong> <mark>Saúde / Esportes</mark></p>
+                <p><strong>Status:</strong> Pendente</p>
+                <p>Sessão semanal de exercícios ao ar livre e corrida.</p>
+                <footer>
+                    <button type="button">Iniciar</button>
+                    <button type="button">Editar</button>
+                    <button type="button">Excluir</button>
+                </footer>
+            </article>
+
+            <article>
+                <header>
+                    <h3>Pesquisa de Ferramentas de Governança de Dados</h3>
+                    <p>
+                        Horário: 
+                        <time datetime="19:00">19:00</time> às 
+                        <time datetime="20:30">20:30</time>
+                    </p>
+                </header>
+                <p><strong>Categoria:</strong> <mark>Trabalho / Projetos</mark></p>
+                <p><strong>Status:</strong> Pendente</p>
+                <p>Análise comparativa sobre Pentaho PDI e OpenMetadata.</p>
+                <footer>
+                    <button type="button">Iniciar</button>
+                    <button type="button">Editar</button>
+                    <button type="button">Excluir</button>
+                </footer>
+            </article>
+
+        </section>
+
+        <section aria-labelledby="titulo-lembretes">
+            <h2 id="titulo-lembretes">Próximos Lembretes</h2>
+            
+            <article>
+                <h3>Alerta: Treino de Calistenia e Corrida</h3>
+                <p><strong>Horário do Evento:</strong> 17:00</p>
+                <p>
+                    <strong>Disparo do Lembrete:</strong> 
+                    <time datetime="16:45">16:45</time> (15 minutos antes)
+                </p>
+                <p><small>Notificação ativa via Web Notifications API</small></p>
+            </article>
+        </section>
+
+    </main>
+
+    <footer>
+        <p><strong>EasySched</strong> - Gestão Integrada de Cronogramas e Lembretes.</p>
+        <p>Projeto de apoio à organização pessoal. Licença Educacional.</p>
+    </footer>
+
+</body>
+</html>
