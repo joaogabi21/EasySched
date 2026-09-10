@@ -1,0 +1,272 @@
+/* VARIÁVEIS DE DESIGN SYSTEM (TOKENS) */
+:root {
+  --primary: #2563eb;          
+  --primary-hover: #1d4ed8;
+  --primary-light: #eff6ff;
+  --dark-slate: #0f172a;       
+  --text-main: #334155;        
+  --text-muted: #64748b;       
+  --bg-main: #f8fafc;          
+  --bg-card: #ffffff;          
+  --border-color: #e2e8f0;
+
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --transition: all 0.25s ease-in-out;
+}
+
+/* RESET CSS & CONFIGURAÇÕES BASE */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* CABEÇALHO & NAVEGAÇÃO (FLEXBOX) */
+header {
+  background-color: var(--dark-slate);
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+  box-shadow: var(--shadow-md);
+  position: static;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 1rem;
+}
+
+nav a {
+  color: #94a3b8;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+nav a:hover, nav a:focus {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* SEÇÕES & TÍTULOS */
+section {
+  margin-bottom: 2.5rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  color: var(--dark-slate);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+/* CARDS METRICOS - CSS GRID */
+section[aria-labelledby="titulo-resumo"] ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr; /* Mobile: 1 coluna */
+  gap: 1rem;
+}
+
+section[aria-labelledby="titulo-resumo"] li {
+  background: var(--bg-card);
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+/* CRONOGRAMA DIÁRIO & CARDS DE ATIVIDADES */
+section[aria-labelledby="titulo-cronograma"] {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+article {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+mark {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Botões nos Cards */
+article footer {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+button {
+  background-color: var(--primary);
+  color: #ffffff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+button[type="button"] {
+  background-color: #f1f5f9;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+
+/* FORMULÁRIOS */
+form {
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+fieldset {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+input[type="text"], input[type="date"], input[type="time"], select, textarea {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+}
+
+/* TABELAS */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+}
+
+th, td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* MEDIA QUERIES (RESPONSIVIDADE MULTI-DISPOSITIVO) */
+
+/* BREAKPOINT 1: TABLET (>= 768px) */
+@media (min-width: 768px) {
+  header {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  section[aria-labelledby="titulo-resumo"] ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  section[aria-labelledby="titulo-cronograma"] {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  fieldset {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+
+  fieldset p:has(#titulo), fieldset p:has(#descricao), fieldset p:has(#ativar-lembrete) {
+    grid-column: span 2;
+  }
+
+  form > div:last-child {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+/* BREAKPOINT 2: DESKTOP (>= 1024px) */
+@media (min-width: 1024px) {
+  section[aria-labelledby="titulo-resumo"] ul {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  body.page-principal main {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  body.page-principal section[aria-labelledby="titulo-resumo"] {
+    grid-column: 1 / -1;
+  }
+
+  form {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+}
