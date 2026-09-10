@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EasySched - Relatórios e Distribuição de Tempo</title>
 </head>
@@ -38,101 +39,104 @@
             <h2 id="titulo-relatorio-categorias">Distribuição de Tempo por Categoria</h2>
             <p>Resumo quantitativo de horas dedicadas a cada área da vida ao longo da semana.</p>
 
-            <table>
-                <caption>Resumo Semanal de Horas Alocadas por Categoria</caption>
-                
-                <thead>
-                    <tr>
-                        <th scope="col">Categoria</th>
-                        <th scope="col">Horas Alocadas</th>
-                        <th scope="col">Percentual do Tempo</th>
-                        <th scope="col">Indicador Visual</th>
-                    </tr>
-                </thead>
+            <div class="table-responsive">
+                <table>
+                    <caption>Resumo Semanal de Horas Alocadas por Categoria</caption>
+                    
+                    <thead>
+                        <tr>
+                            <th scope="col">Categoria</th>
+                            <th scope="col">Horas Alocadas</th>
+                            <th scope="col">Percentual do Tempo</th>
+                            <th scope="col">Indicador Visual</th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    <tr>
-                        <th scope="row">Trabalho / Projetos</th>
-                        <td>9h 30min</td>
-                        <td>47.5%</td>
-                        <td>
-                            <meter value="0.475" min="0" max="1">47.5%</meter>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Estudos</th>
-                        <td>6h 00min</td>
-                        <td>30%</td>
-                        <td>
-                            <meter value="0.30" min="0" max="1">30%</meter>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Saúde / Esportes</th>
-                        <td>3h 00min</td>
-                        <td>15%</td>
-                        <td>
-                            <meter value="0.15" min="0" max="1">15%</meter>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Lazer</th>
-                        <td>1h 30min</td>
-                        <td>7.5%</td>
-                        <td>
-                            <meter value="0.075" min="0" max="1">7.5%</meter>
-                        </td>
-                    </tr>
-                </tbody>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Trabalho / Projetos</th>
+                            <td>9h 30min</td>
+                            <td>47.5%</td>
+                            <td>
+                                <meter value="0.475" min="0" max="1">47.5%</meter>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Estudos</th>
+                            <td>6h 00min</td>
+                            <td>30%</td>
+                            <td>
+                                <meter value="0.30" min="0" max="1">30%</meter>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Saúde / Esportes</th>
+                            <td>3h 00min</td>
+                            <td>15%</td>
+                            <td>
+                                <meter value="0.15" min="0" max="1">15%</meter>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Lazer</th>
+                            <td>1h 30min</td>
+                            <td>7.5%</td>
+                            <td>
+                                <meter value="0.075" min="0" max="1">7.5%</meter>
+                            </td>
+                        </tr>
+                    </tbody>
 
-                <tfoot>
-                    <tr>
-                        <th scope="row">Total Geral</th>
-                        <td><strong>20h 00min</strong></td>
-                        <td><strong>100%</strong></td>
-                        <td>—</td>
-                    </tr>
-                </tfoot>
-            </table>
+                    <tfoot>
+                        <tr>
+                            <th scope="row">Total Geral</th>
+                            <td><strong>20h 00min</strong></td>
+                            <td><strong>100%</strong></td>
+                            <td>—</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </section>
 
         <section aria-labelledby="titulo-status-resumo">
             <h2 id="titulo-status-resumo">Resumo por Status das Atividades</h2>
 
-            <table>
-                <caption>Quantidade e Percentual por Status de Execução</caption>
-                <thead>
-                    <tr>
-                        <th scope="col">Status</th>
-                        <th scope="col">Quantidade de Atividades</th>
-                        <th scope="col">Proporção</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">Concluído</th>
-                        <td>7</td>
-                        <td>70%</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Em Andamento</th>
-                        <td>1</td>
-                        <td>10%</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Pendente</th>
-                        <td>2</td>
-                        <td>20%</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table>
+                    <caption>Quantidade e Percentual por Status de Execução</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Status</th>
+                            <th scope="col">Quantidade de Atividades</th>
+                            <th scope="col">Proporção</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Concluído</th>
+                            <td>7</td>
+                            <td>70%</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Em Andamento</th>
+                            <td>1</td>
+                            <td>10%</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Pendente</th>
+                            <td>2</td>
+                            <td>20%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
 
     </main>
 
     <footer>
         <p><strong>EasySched</strong> - Gestão Integrada de Cronogramas e Lembretes.</p>
-        <p>Projeto de apoio à organização pessoal. Licença Educacional.</p>
     </footer>
 
 </body>
