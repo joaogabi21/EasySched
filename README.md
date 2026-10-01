@@ -4,277 +4,124 @@
 
 Aplicação Web para gerenciamento e análise de rotinas pessoais e profissionais organizadas por blocos de tempo.
 
-**Status:** Projeto em desenvolvimento
+**Status do Projeto:** Etapa 04 Concluída — Interatividade Front-end com JavaScript e Persistência Local.
 
-## **Sobre o projeto**
+---
 
-O **EasySched** tem como objetivo auxiliar estudantes, profissionais autônomos e freelancers a organizar e acompanhar suas atividades diárias e semanais.
+## **Sobre o Projeto**
 
-A aplicação permitirá registrar compromissos em blocos de tempo, categorizar tarefas e configurar alertas ativos para evitar esquecimentos e conflitos de agenda.
+O **EasySched** é uma aplicação web desenvolvida para auxiliar estudantes, profissionais autônomos e freelancers a organizar e acompanhar suas atividades diárias e semanais com clareza.
 
-A partir das informações registradas, o sistema deverá apresentar:
+A aplicação permite registrar compromissos em blocos de tempo, categorizar tarefas, acompanhar o progresso em um cronograma dinâmico e analisar a distribuição do tempo por meio de relatórios interativos.
 
-* visualização da rotina em grade diária e semanal;  
-* validação e alertas de choques de horário;  
-* sistema de notificações prévias para compromissos prioritários;  
-* status de execução das atividades (*Pendente*, *Em Andamento*, *Concluído*);  
-* relatórios sobre a distribuição do tempo por categoria.
+---
 
-O projeto será desenvolvido de forma incremental ao longo da disciplina.
+## **Estrutura de Arquivos do Projeto**
 
-## **Problema**
+```text
+EasySched/
+├── principal.html        # Dashboard principal (Resumo de Hoje e Cronograma)
+├── atividade.html        # Formulário de cadastro de novas atividades com validação
+├── relatorio.html        # Relatórios dinâmicos de progresso e distribuição de tempo
+├── styles.css            # Estilização global, responsiva (Breakpoints 768px/1024px) e componentes
+├── js/
+│   ├── storage.js        # Camada de persistência e gerenciamento do LocalStorage
+│   ├── principal.js      # Lógica do cronograma, filtros, ordenação e contadores do dia
+│   ├── atividade.js      # Lógica de validação em tempo real e submissão do formulário
+│   └── relatorio.js      # Lógica dos relatórios temporais e recálculo de métricas
+└── docs/
+    ├── etapa-02.md       # Documentação do HTML   
+    ├── etapa-03.md       # Documentação do layout responsivo (CSS Grid / Flexbox)
+    ├── etapa-04.md       # Documentação da interatividade JS e Matriz de Evidências
+    ├── proposta.md       # Documentação da proposta inicial do projeto
+    └── evidencias/
+        └── etapa-03/     # Capturas de tela comprovando o funcionamento em diferentes viewports 
+        └── etapa-04/     # Capturas de tela comprovando o funcionamento das interações
+```
 
-À medida que a rotina de um estudante ou profissional autônomo se torna mais dinâmica, torna-se difícil manter o controle sobre prazos, reuniões e horários de estudo.
+---
 
-A ausência de alertas ativos e a gestão descentralizada provocam sobreposição acidental de compromissos no mesmo horário, esquecimento de tarefas importantes e falta de clareza sobre quantas horas são dedicadas a cada área da vida.
+## **Funcionalidades Implementadas (Etapa 04)**
 
-O EasySched pretende centralizar essas informações e transformá-las em uma visão organizada do tempo do usuário.
+### 1. **Cadastro e Validação de Atividades (`atividade.html`)**
+- **Bloqueio de Datas Anteriores:** Restrição no calendário nativo (`input.min`) e validação lógica no envio para impedir compromissos em datas passadas.
+- **Validação Temporal de Horários:** Garantia de que o horário de término é estritamente posterior ao horário de início.
+- **Regras de Usabilidade:** Desativação automática de lembretes caso a atividade seja cadastrada diretamente como "Concluída".
+- **Feedback Visual:** Banners coloridos de erro (`.mensagem-erro`) e sucesso (`.mensagem-sucesso`) com destaque em borda vermelha para campos inválidos.
 
-## **Objetivo**
+### 2. **Dashboard e Cronograma Inteligente (`principal.html`)**
+- **Resumo Numérico Estrito:** Contadores do topo ("Total", "Concluídas", "Em Andamento", "Pendentes") focados exclusivamente nas atividades do **dia atual**.
+- **Separação por Blocos de Foco:** Exibição direcionada apenas para as atividades de **Hoje** e **Amanhã**, mantendo o foco operacional do usuário e ordenadas cronologicamente por horário de início.
+- **Busca e Filtros em Tempo Real:** Filtragem dinâmica por termo de busca (título/descrição), Categoria (*Estudos*, *Trabalho*, *Saúde*, *Lazer*) e Status (*Pendente*, *Em Andamento*, *Concluído*).
+- **Ações Dinâmicas:** Alteração de status com um clique ("Iniciar", "Concluir") e exclusão de tarefas com re-renderização instantânea sem recarregar a página.
 
-Permitir que o usuário planeje seus compromissos em blocos de tempo, configure lembretes personalizados e acompanhe a execução de sua rotina sem sobreposição de agenda.
+### 3. **Relatórios e Análise Temporais (`relatorio.html`)**
+- **Filtro por Período:** Seletor temporal para alternar os dados entre **Hoje**, **Esta Semana**, **Este Mês**, **Este Ano** e **Todo o Período**.
+- **Indicadores Gráficos Dinâmicos:**
+  - Barra de progresso de conclusão (`<progress>`).
+  - Distribuição de tempo alocado em horas e porcentagem por categoria (`<meter>`).
+  - Balanço de tarefas por status em tabela formatada.
 
-O sistema também deverá disponibilizar relatórios simples que auxiliem o usuário na análise da sua produtividade e distribuição de tempo.
+---
 
-O EasySched é uma ferramenta de apoio à organização pessoal. O cumprimento de prazos e compromissos depende do acompanhamento do próprio usuário.
+## **Tecnologias Utilizadas**
 
-## **Principais funcionalidades**
+- **Front-end:** HTML5 Semântico, CSS3 (Variáveis/Tokens, Flexbox, CSS Grid e Media Queries responsivas para 768px e 1024px) e JavaScript (ES6+ Vanilla).
+- **Manipulação do DOM e Eventos:** `addEventListener`, `createElement`, `appendChild`, atualização dinâmica de classes e atributos.
+- **Persistência de Dados:** `localStorage` do navegador com serialização e desserialização via JSON.
+- **Processamento de Datas:** Objetos nativos `Date` e manipulação de strings de data ISO (`YYYY-MM-DD`).
 
-### **Atividades e Compromissos**
+---
 
-* Cadastro de compromissos com data e horários de início/fim;  
-* Consulta e filtragem de tarefas;  
-* Edição de compromissos;  
-* Exclusão de atividades;  
-* Marcação de status (*Pendente*, *Em Andamento*, *Concluído*).
+## **Como Executar a Aplicação**
 
-### **Cronograma**
+A aplicação é **100% Client-Side** e não requer a instalação de compiladores ou servidores back-end adicionais nesta etapa.
 
-* Visualização em grade diária (linha do tempo) e semanal;  
-* Categorização visual por cores e tags (*Estudos*, *Trabalho*, *Saúde*, *Lazer*);  
-* Detecção e alerta visual de conflito de horários.
+### **Passo a Passo:**
 
-### **Lembretes e Notificações**
+1. **Clonar ou Baixar o Repositório:**
+   ```bash
+   git clone https://github.com/seu-usuario/EasySched.git
+   cd EasySched
+   ```
 
-* Configuração de avisos prévios por compromisso;  
-* Seleção de tempo de antecedência;  
-* Disparo de alertas nativos via *Web Notifications API* ou avisos na interface.
+2. **Abrir no Navegador:**
+   - Abra o arquivo `principal.html` diretamente no seu navegador de preferência (Google Chrome, Mozilla Firefox, Microsoft Edge, etc.) clicando duas vezes sobre o arquivo.
+   - Alternativamente, utilize a extensão **Live Server** no VS Code para executar a aplicação em um servidor local (`http://127.0.0.1:5500`).
 
-### **Relatórios**
+---
 
-* Soma de horas alocadas por categoria;  
-* Percentual de tempo dedicado a cada área na semana;  
-* Resumo de atividades concluídas versus pendentes.
+## **Roteiro de Testes das Funcionalidades Interativas**
 
-## **Domínio**
+Para reproduzir e verificar o funcionamento de todas as regras interativas implementadas:
 
-Os principais conceitos do sistema são:
+1. **Testar Validações no Formulário (`atividade.html`):**
+   - Tente submeter o formulário sem preencher os campos para observar o banner de erro.
+   - Tente selecionar/digitar uma data passada. O sistema exibirá o alerta de bloqueio.
+   - Coloque a data de hoje, selecione Horário de Início às `14:00` e Término às `13:00`. Observe o aviso de inconsistência de horários.
+   - Preencha corretamente (Início `14:00`, Término `16:00`) e clique em "Salvar Atividade". Observe o redirecionamento.
 
-Usuário  
-   │  
-   └── possui  
-          │  
-          ▼  
-      Cronograma  
-          │  
-          ├── contém ──► Categorias  
-          │  
-          └── contém  
-                 │  
-                 ▼  
-              Atividades  
-                 │  
-                 └── gera  
-                        │  
-                        ▼  
-                     Lembretes
+2. **Testar Dashboard e Filtros (`principal.html`):**
+   - Verifique que a nova atividade aparece no cronograma sob o dia de **Hoje** e altera os contadores do topo.
+   - Cadastre uma nova atividade com a data de **Amanhã**. Observe que ela é exibida no bloco separado `📅 Para Amanhã`.
+   - Digite no campo "Pesquisar" ou mude o seletor de Categoria/Status para ver a filtragem instantânea dos cards.
+   - Clique em "Iniciar" ou "Concluir" no card para verificar a mudança do badge de cor e a atualização do resumo.
 
-### **Entidades principais**
+3. **Testar Relatórios e Filtro Temporal (`relatorio.html`):**
+   - Acesse a aba de Relatórios na navegação do cabeçalho.
+   - Altere o seletor "Filtrar Relatórios por Período" entre **Hoje**, **Esta Semana**, **Este Mês** e **Todo o Período**.
+   - Observe que as porcentagens da barra `<progress>` e dos medidores `<meter>` recalculam em tempo real.
 
-* **Usuário** — pessoa que utiliza o sistema e gerencia sua agenda.  
-* **Atividade / Compromisso** — bloco de tempo com horário de início, fim, data e status.  
-* **Categoria** — rótulo temático (com nome e cor) para agrupar e filtrar atividades.  
-* **Lembrete** — configuração de alerta associado a uma atividade específica.  
-* **Cronograma** — visão consolidada dos blocos de tempo do usuário.
+---
 
-## **Tecnologias**
+## **Versionamento e Documentação**
 
-### **Front-end**
+- **Tag da Entrega:** `etapa-04`
+- **Documentação Detalhada e Matriz de Evidências:** `/docs/etapa-04.md`
+- **Evidências Visuais (Screenshots):** `/docs/evidencias/etapa-04/`
 
-Tecnologias inicialmente previstas:
+---
 
-* HTML5;  
-* CSS3;  
-* JavaScript;  
-* Web Notifications API.
-
-### **Back-end**
-
-Tecnologias inicialmente previstas:
-
-* Python (FastAPI);  
-* Módulo de agendamento de tarefas (APScheduler);  
-* API REST;  
-* JSON.
-
-### **Banco de dados**
-
-Será utilizado um banco de dados relacional.
-
-Será utilizado **SQLite** em ambiente de desenvolvimento local e **PostgreSQL** para ambiente de produção.
-
-## **Arquitetura inicial**
-
-A visão inicial da aplicação é:
-  
-┌──────────────────────────────────────┐  
-│              Front-end               │  
-│                                      │  
-│   HTML5 / CSS / JavaScript (ES6+)    │  
-│       Web Notifications API          │  
-└──────────────────┬───────────────────┘  
-                   │  
-                   │ HTTP / JSON  
-                   ▼  
-┌──────────────────────────────────────┐  
-│               API REST               │  
-│                                      │  
-│    Python (Flask) / Node.js          │  
-└──────────────────┬───────────────────┘  
-                   │  
-                   ▼  
-┌──────────────────────────────────────┐  
-│          Regras de negócio           │  
-│                                      │  
-│  Validação de Choque de Horários     │  
-│  Gerenciador de Lembretes (Cron)     │  
-│  Cálculo de Horas por Categoria      │  
-└──────────────────┬───────────────────┘  
-                   │  
-                   ▼  
-┌──────────────────────────────────────┐  
-│            Banco de dados            │  
-└──────────────────────────────────────┘
-
-A arquitetura será refinada conforme o projeto evoluir.
-
-## **Estrutura prevista do projeto**
+## **Licença e Isenção de Responsabilidade**
 
-A estrutura poderá evoluir ao longo das etapas. Inicialmente, será adotada uma organização semelhante a:
-
-EasySched/  
-│  
-├── docs/  
-│   ├── proposta.md  
-│  
-├── client/  
-│  
-├── server/  
-│  
-├── README.md  
-│  
-└── .gitignore
-
-A estrutura definitiva será definida conforme as tecnologias e decisões arquitetônicas adotadas durante o desenvolvimento.
-
-## **Escopo inicial**
-
-### **Incluído**
-
-* cadastro e gestão de atividades;  
-* categorização com cores personalizadas;  
-* validação automática de choques de horário;  
-* configuração de lembretes com antecedência;  
-* exibição em linha do tempo diária e grade semanal;  
-* alteração do status de conclusão das tarefas;  
-* relatório de distribuição de tempo por categoria.
-
-### **Não incluído inicialmente**
-
-* integração com calendários externos (Google Calendar, Outlook);  
-* envio de notificações por SMS ou WhatsApp;  
-* sincronização push mobile em segundo plano sem o navegador aberto;  
-* inteligência artificial para montagem automática de rotinas;  
-* compartilhamento de agendas entre múltiplos usuários em tempo real.
-
-## **Versionamento**
-
-O projeto utilizará o Git durante todo o desenvolvimento.
-
-As versões das etapas serão identificadas preferencialmente por tags:
-
-etapa-01  
-etapa-02  
-etapa-03  
-etapa-04  
-etapa-05  
-etapa-06  
-etapa-07  
-etapa-08  
-etapa-09  
-etapa-10  
-final
-
-## **Documentação**
-
-A documentação do projeto será mantida no diretório:
-
-/docs
-
-A documentação inicial inclui:
-
-/docs/proposta.md
-
-Novos documentos serão adicionados conforme as etapas do projeto forem concluídas.
-
-## **Execução**
-
-As instruções de instalação e execução serão adicionadas e atualizadas conforme as tecnologias forem implementadas.
-
-A versão inicial do projeto ainda não possui uma aplicação executável completa.
-
-Quando o front-end e o back-end forem implementados, esta seção deverá conter:
-
-1. pré-requisitos;  
-2. instalação das dependências;  
-3. configuração das variáveis de ambiente;  
-4. configuração do banco de dados;  
-5. inicialização do servidor;  
-6. inicialização do cliente;  
-7. instruções para utilização da aplicação.
-
-## **Testes**
-
-Os procedimentos e evidências de testes serão documentados conforme as funcionalidades forem implementadas.
-
-A aplicação deverá evoluir para possuir mecanismos que permitam verificar principalmente:
-
-* validação de conflitos de horários na agenda;  
-* disparo correto das notificações nos prazos configurados;  
-* cálculo de relatórios e agregação de tempo por categoria;  
-* operações da API;  
-* persistência dos dados no banco;  
-* integração entre front-end e back-end.
-
-## **Decisões e limitações**
-
-Algumas decisões ainda serão tomadas durante o desenvolvimento, incluindo:
-
-* estratégia final para checagem contínua de lembretes no servidor;  
-* mecanismo definitivo de permissões no navegador para a *Web Notifications API*;  
-* biblioteca de renderização da grade temporal no front-end;  
-* mecanismo de autenticação de usuários;  
-* arquitetura definitiva do servidor.
-
-Essas decisões deverão ser registradas na documentação do projeto conforme forem tomadas.
-
-## **Responsabilidade sobre as informações**
-
-O EasySched tem finalidade exclusivamente educacional e de suporte à organização pessoal do tempo do usuário.
-
-A aplicação fornece alertas e relatórios com base nas informações cadastradas pelo próprio usuário, não se responsabilizando por eventuais imprevistos, perdas de prazos ou compromissos não realizados.
-
-## **Licença**
-
-A licença do projeto será definida posteriormente.
-
+O **EasySched** é um projeto de caráter educacional e de apoio à organização pessoal. O cumprimento dos prazos e compromissos é de responsabilidade exclusiva do usuário.

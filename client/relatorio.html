@@ -2,9 +2,9 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EasySched - Relatórios e Distribuição de Tempo</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -21,28 +21,37 @@
 
     <main>
 
-        <section aria-labelledby="titulo-meta-semanal">
-            <h2 id="titulo-meta-semanal">Progresso Semanal de Execução</h2>
-            
-            <article>
-                <h3>Conclusão Geral de Compromissos</h3>
-                <p>Taxa de atividades concluídas em relação ao total planejado na semana:</p>
-                <p>
-                    <strong>Progresso: 70%</strong><br>
-                    <progress value="70" max="100">70%</progress>
-                </p>
-                <p><small>7 de 10 atividades foram concluídas com sucesso.</small></p>
+        <!-- FILTRO DE PERÍODO -->
+        <section aria-label="Filtro de Período do Relatório">
+            <div class="painel-filtros">
+                <div class="grupo-filtro">
+                    <label for="filtro-periodo">Filtrar Relatórios por Período:</label>
+                    <select id="filtro-periodo">
+                        <option value="semana" selected>Esta Semana</option>
+                        <option value="dia">Hoje (Dia Atual)</option>
+                        <option value="mes">Este Mês</option>
+                        <option value="ano">Este Ano</option>
+                        <option value="todos">Todo o Período (Geral)</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROGRESSO DE EXECUÇÃO DINÂMICO (Sem lacunas estáticas) -->
+        <section aria-label="Progresso de Execução">
+            <article id="card-progresso">
+                <!-- Preenchido dinamicamente via JS -->
             </article>
         </section>
 
+        <!-- DISTRIBUIÇÃO POR CATEGORIA -->
         <section aria-labelledby="titulo-relatorio-categorias">
             <h2 id="titulo-relatorio-categorias">Distribuição de Tempo por Categoria</h2>
-            <p>Resumo quantitativo de horas dedicadas a cada área da vida ao longo da semana.</p>
+            <p>Resumo quantitativo de horas dedicadas a cada área da vida no período selecionado.</p>
 
             <div class="table-responsive">
                 <table>
-                    <caption>Resumo Semanal de Horas Alocadas por Categoria</caption>
-                    
+                    <caption>Resumo de Horas Alocadas por Categoria</caption>
                     <thead>
                         <tr>
                             <th scope="col">Categoria</th>
@@ -51,54 +60,17 @@
                             <th scope="col">Indicador Visual</th>
                         </tr>
                     </thead>
-
                     <tbody>
-                        <tr>
-                            <th scope="row">Trabalho / Projetos</th>
-                            <td>9h 30min</td>
-                            <td>47.5%</td>
-                            <td>
-                                <meter value="0.475" min="0" max="1">47.5%</meter>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Estudos</th>
-                            <td>6h 00min</td>
-                            <td>30%</td>
-                            <td>
-                                <meter value="0.30" min="0" max="1">30%</meter>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Saúde / Esportes</th>
-                            <td>3h 00min</td>
-                            <td>15%</td>
-                            <td>
-                                <meter value="0.15" min="0" max="1">15%</meter>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Lazer</th>
-                            <td>1h 30min</td>
-                            <td>7.5%</td>
-                            <td>
-                                <meter value="0.075" min="0" max="1">7.5%</meter>
-                            </td>
-                        </tr>
+                        <!-- Preenchido dinamicamente via JS -->
                     </tbody>
-
                     <tfoot>
-                        <tr>
-                            <th scope="row">Total Geral</th>
-                            <td><strong>20h 00min</strong></td>
-                            <td><strong>100%</strong></td>
-                            <td>—</td>
-                        </tr>
+                        <!-- Preenchido dinamicamente via JS -->
                     </tfoot>
                 </table>
             </div>
         </section>
 
+        <!-- RESUMO POR STATUS -->
         <section aria-labelledby="titulo-status-resumo">
             <h2 id="titulo-status-resumo">Resumo por Status das Atividades</h2>
 
@@ -113,21 +85,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">Concluído</th>
-                            <td>7</td>
-                            <td>70%</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Em Andamento</th>
-                            <td>1</td>
-                            <td>10%</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Pendente</th>
-                            <td>2</td>
-                            <td>20%</td>
-                        </tr>
+                        <!-- Preenchido dinamicamente via JS -->
                     </tbody>
                 </table>
             </div>
@@ -137,7 +95,11 @@
 
     <footer>
         <p><strong>EasySched</strong> - Gestão Integrada de Cronogramas e Lembretes.</p>
+        <p>Projeto de apoio à organização pessoal. Licença Educacional.</p>
     </footer>
 
+    <!-- Scripts JavaScript -->
+    <script src="js/storage.js"></script>
+    <script src="js/relatorio.js"></script>
 </body>
 </html>

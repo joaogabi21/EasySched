@@ -1,25 +1,42 @@
-/* VARIÁVEIS DE DESIGN SYSTEM (TOKENS) */
+/* --------------------------------------------------------------------------
+   1. VARIÁVEIS DE DESIGN SYSTEM (TOKENS)
+   -------------------------------------------------------------------------- */
 :root {
-  --primary: #2563eb;          
+  /* Cores Principais */
+  --primary: #2563eb;          /* Azul Royal */
   --primary-hover: #1d4ed8;
   --primary-light: #eff6ff;
-  --dark-slate: #0f172a;       
-  --text-main: #334155;        
-  --text-muted: #64748b;       
-  --bg-main: #f8fafc;          
-  --bg-card: #ffffff;          
+  --dark-slate: #0f172a;       /* Slate Escuro */
+  --text-main: #334155;        /* Grafite para leitura */
+  --text-muted: #64748b;       /* Cinza Secundário */
+  --bg-main: #f8fafc;          /* Fundo suave off-white */
+  --bg-card: #ffffff;          /* Fundo dos Cards */
   --border-color: #e2e8f0;
 
+  /* Cores Semânticas de Status */
+  --status-concluido-bg: #dcfce7;
+  --status-concluido-text: #166534;
+  --status-andamento-bg: #fef3c7;
+  --status-andamento-text: #92400e;
+  --status-pendente-bg: #f1f5f9;
+  --status-pendente-text: #475569;
+
+  /* Fontes e Sombras */
   --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  /* Raios de Borda e Transições */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --transition: all 0.25s ease-in-out;
 }
 
-/* RESET CSS & CONFIGURAÇÕES BASE */
+/* --------------------------------------------------------------------------
+   2. RESET CSS & CONFIGURAÇÕES BASE
+   -------------------------------------------------------------------------- */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -44,13 +61,15 @@ main {
   padding: 2rem 1.5rem;
 }
 
-/* CABEÇALHO & NAVEGAÇÃO (FLEXBOX) */
+/* --------------------------------------------------------------------------
+   3. CABEÇALHO & NAVEGAÇÃO (FLEXBOX)
+   -------------------------------------------------------------------------- */
 header {
   background-color: var(--dark-slate);
   color: #ffffff;
   padding: 1rem 1.5rem;
   box-shadow: var(--shadow-md);
-  position: static;
+  position: sticky;
   top: 0;
   z-index: 100;
   display: flex;
@@ -62,6 +81,7 @@ header {
 header h1 {
   font-size: 1.75rem;
   font-weight: 700;
+  letter-spacing: -0.025em;
   color: #ffffff;
 }
 
@@ -69,6 +89,7 @@ nav ul {
   display: flex;
   list-style: none;
   gap: 1rem;
+  padding: 0;
 }
 
 nav a {
@@ -85,7 +106,9 @@ nav a:hover, nav a:focus {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* SEÇÕES & TÍTULOS */
+/* --------------------------------------------------------------------------
+   4. SEÇÕES & TÍTULOS
+   -------------------------------------------------------------------------- */
 section {
   margin-bottom: 2.5rem;
 }
@@ -98,11 +121,13 @@ h2 {
   border-bottom: 2px solid var(--border-color);
 }
 
-/* CARDS METRICOS - CSS GRID */
+/* --------------------------------------------------------------------------
+   5. RESUMO DE HOJE (CARDS METRICOS - CSS GRID)
+   -------------------------------------------------------------------------- */
 section[aria-labelledby="titulo-resumo"] ul {
   list-style: none;
   display: grid;
-  grid-template-columns: 1fr; /* Mobile: 1 coluna */
+  grid-template-columns: repeat(1, 1fr);
   gap: 1rem;
 }
 
@@ -114,13 +139,31 @@ section[aria-labelledby="titulo-resumo"] li {
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.95rem;
 }
 
-/* CRONOGRAMA DIÁRIO & CARDS DE ATIVIDADES */
+section[aria-labelledby="titulo-resumo"] li strong {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* --------------------------------------------------------------------------
+   6. CRONOGRAMA DIÁRIO & CARDS DE ATIVIDADES
+   -------------------------------------------------------------------------- */
 section[aria-labelledby="titulo-cronograma"] {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.25rem;
+}
+
+/* Ajuste do título e da barra de busca para ocuparem a largura inteira */
+section[aria-labelledby="titulo-cronograma"] > h2,
+section[aria-labelledby="titulo-cronograma"] > .painel-filtros {
+  grid-column: 1 / -1;
+  width: 100%;
 }
 
 article {
@@ -129,11 +172,48 @@ article {
   border: 1px solid var(--border-color);
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
+  transition: var(--transition);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.85rem;
 }
 
+article:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #cbd5e1;
+}
+
+/* Cabeçalho do Card */
+article header {
+  position: static !important; /* Força o comportamento normal de rolagem */
+  top: auto;
+  z-index: auto;
+  background-color: var(--dark-slate);
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;    /* Centraliza os títulos */
+  text-align: center;
+  gap: 0.35rem;
+}
+
+article header h3 {
+  color: #ffffff !important;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
+}
+
+article header p {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Categoria e Destaques */
 mark {
   background-color: var(--primary-light);
   color: var(--primary);
@@ -153,15 +233,20 @@ article footer {
   flex-wrap: wrap;
 }
 
-button {
+button, .button-like {
   background-color: var(--primary);
   color: #ffffff;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: var(--radius-sm);
   font-weight: 600;
+  font-size: 0.875rem;
   cursor: pointer;
   transition: var(--transition);
+}
+
+button:hover {
+  background-color: var(--primary-hover);
 }
 
 button[type="button"] {
@@ -170,12 +255,37 @@ button[type="button"] {
   border: 1px solid var(--border-color);
 }
 
-/* FORMULÁRIOS */
+button[type="button"]:hover {
+  background-color: #e2e8f0;
+  color: var(--dark-slate);
+}
+
+/* --------------------------------------------------------------------------
+   7. SEÇÃO DE LEMBRETES
+   -------------------------------------------------------------------------- */
+section[aria-labelledby="titulo-lembretes"] article {
+  border-left: 4px solid var(--primary);
+  background-color: #f8fafc;
+}
+
+section[aria-labelledby="titulo-lembretes"] article header {
+  background-color: transparent;
+  padding: 0;
+}
+
+section[aria-labelledby="titulo-lembretes"] article header h3 {
+  color: var(--dark-slate) !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. FORMULÁRIOS (atividade.html)
+   -------------------------------------------------------------------------- */
 form {
   background: var(--bg-card);
   padding: 1.5rem;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -190,17 +300,88 @@ fieldset {
   gap: 1rem;
 }
 
-input[type="text"], input[type="date"], input[type="time"], select, textarea {
+legend {
+  font-weight: 700;
+  color: var(--dark-slate);
+  padding: 0 0.5rem;
+  font-size: 1rem;
+}
+
+label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--dark-slate);
+  margin-bottom: 0.25rem;
+  display: inline-block;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"],
+select,
+textarea {
   width: 100%;
   padding: 0.65rem 0.85rem;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  background-color: #ffffff;
+  transition: var(--transition);
 }
 
-/* TABELAS */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.5rem;
+  transform: scale(1.2);
+}
+
+form > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+form > div:last-child a {
+  text-align: center;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+form > div:last-child a:hover {
+  background-color: #f1f5f9;
+  color: var(--dark-slate);
+}
+
+button[type="reset"] {
+  background-color: #f1f5f9;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+
+button[type="reset"]:hover {
+  background-color: #e2e8f0;
+}
+
+/* --------------------------------------------------------------------------
+   9. TABELAS & RELATÓRIOS (relatorio.html)
+   -------------------------------------------------------------------------- */
 .table-responsive {
   width: 100%;
   overflow-x: auto;
+  margin-bottom: 1.5rem;
 }
 
 table {
@@ -208,20 +389,208 @@ table {
   border-collapse: collapse;
   background: var(--bg-card);
   border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+caption {
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: left;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
 }
 
 th, td {
   padding: 0.85rem 1rem;
+  text-align: left;
   border-bottom: 1px solid var(--border-color);
+  font-size: 0.95rem;
 }
 
-/* MEDIA QUERIES (RESPONSIVIDADE MULTI-DISPOSITIVO) */
+thead th {
+  background-color: #f1f5f9;
+  color: var(--dark-slate);
+  font-weight: 700;
+}
+
+tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+tfoot tr {
+  background-color: #f8fafc;
+  font-weight: 700;
+}
+
+progress, meter {
+  width: 100%;
+  height: 12px;
+  border-radius: 6px;
+}
+
+progress::-webkit-progress-bar, meter::-webkit-meter-bar {
+  background-color: #e2e8f0;
+  border-radius: 6px;
+}
+
+progress::-webkit-progress-value {
+  background-color: var(--primary);
+  border-radius: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   10. RODAPÉ
+   -------------------------------------------------------------------------- */
+footer {
+  background-color: var(--dark-slate);
+  color: #94a3b8;
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.875rem;
+  margin-top: auto;
+}
+
+footer strong {
+  color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   11. COMPONENTES INTERATIVOS & BANNERS (ETAPA 04)
+   -------------------------------------------------------------------------- */
+.mensagem-banner {
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.mensagem-erro {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.mensagem-erro ul {
+  margin-top: 0.5rem;
+  padding-left: 1.25rem;
+}
+
+.mensagem-sucesso {
+  background-color: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+/* Painel de Filtros e Pesquisa */
+.painel-filtros {
+  background: var(--bg-card);
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.grupo-filtro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.grupo-filtro label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.grupo-filtro input,
+.grupo-filtro select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+
+/* Badges de Status */
+.badge-status {
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-pendente {
+  background-color: var(--status-pendente-bg);
+  color: var(--status-pendente-text);
+}
+
+.status-em_andamento {
+  background-color: var(--status-andamento-bg);
+  color: var(--status-andamento-text);
+}
+
+.status-concluido {
+  background-color: var(--status-concluido-bg);
+  color: var(--status-concluido-text);
+}
+
+/* Estado Vazio */
+.aviso-vazio {
+  background-color: var(--bg-card);
+  border: 1px dashed var(--border-color);
+  padding: 2rem;
+  text-align: center;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-weight: 500;
+  grid-column: 1 / -1;
+}
+
+/* Botões de Ação Específicos */
+.btn-iniciar {
+  background-color: #0284c7;
+  color: #ffffff;
+}
+
+.btn-iniciar:hover {
+  background-color: #0369a1;
+}
+
+.btn-concluir {
+  background-color: #16a34a;
+  color: #ffffff;
+}
+
+.btn-concluir:hover {
+  background-color: #15803d;
+}
+
+.btn-excluir {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.btn-excluir:hover {
+  background-color: #b91c1c;
+}
+
+/* ==========================================================================
+   12. MEDIA QUERIES (BREAKPOINTS RESPONSIVOS)
+   ========================================================================== */
 
 /* BREAKPOINT 1: TABLET (>= 768px) */
 @media (min-width: 768px) {
   header {
     flex-direction: row;
     justify-content: space-between;
+    padding: 1.25rem 2rem;
   }
 
   section[aria-labelledby="titulo-resumo"] ul {
@@ -232,24 +601,41 @@ th, td {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .painel-filtros {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+
   fieldset {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1.25rem;
   }
 
-  fieldset p:has(#titulo), fieldset p:has(#descricao), fieldset p:has(#ativar-lembrete) {
+  fieldset p:has(#titulo),
+  fieldset p:has(#descricao),
+  fieldset p:has(#ativar-lembrete) {
     grid-column: span 2;
   }
 
   form > div:last-child {
     flex-direction: row;
     justify-content: flex-end;
+    align-items: center;
+  }
+
+  form > div:last-child button,
+  form > div:last-child a {
+    width: auto;
   }
 }
 
 /* BREAKPOINT 2: DESKTOP (>= 1024px) */
 @media (min-width: 1024px) {
+  main {
+    padding: 2.5rem 2rem;
+  }
+
   section[aria-labelledby="titulo-resumo"] ul {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -263,6 +649,15 @@ th, td {
 
   body.page-principal section[aria-labelledby="titulo-resumo"] {
     grid-column: 1 / -1;
+  }
+
+  body.page-principal section[aria-labelledby="titulo-cronograma"] {
+    grid-column: 1 / 2;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  body.page-principal section[aria-labelledby="titulo-lembretes"] {
+    grid-column: 2 / 3;
   }
 
   form {
