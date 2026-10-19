@@ -120,8 +120,8 @@ function renderizarResumo(sectionResumo, lista) {
 
 /**
  * Renderiza o cronograma:
- * - Sem filtros ativos: exibe apenas o foco em Hoje e Amanhã.
- * - Com filtros ativos (busca/categoria/status): pequisa em TODO o histórico registrado.
+ * - Sem filtros: exibe blocos rotulados "📌 Para Hoje" e "📅 Para Amanhã".
+ * - Com filtros: exibe o bloco "🔍 Atividades Filtradas" com o resultado da busca global.
  */
 function renderizarCronograma(sectionCronograma, listaCompleta, filtros) {
   const cardsAntigos = sectionCronograma.querySelectorAll('article');
@@ -135,7 +135,7 @@ function renderizarCronograma(sectionCronograma, listaCompleta, filtros) {
 
   const temFiltroAtivo = filtros.busca !== '' || filtros.categoria !== 'todas' || filtros.status !== 'todos';
 
-  // 1. Filtrar lista por Termo de Busca, Categoria e Status
+  // 1. Aplica os filtros de busca, categoria e status
   const listaFiltrada = listaCompleta.filter(item => {
     const atendeBusca = !filtros.busca || 
       item.titulo.toLowerCase().includes(filtros.busca) || 
@@ -147,8 +147,19 @@ function renderizarCronograma(sectionCronograma, listaCompleta, filtros) {
     return atendeBusca && atendeCategoria && atendeStatus;
   });
 
-  // 2. CASO COM FILTRO ATIVO: Retorna todos os itens encontrados em qualquer data
+  // Estilo padrão para os subtítulos do cronograma
+  const estiloSubtitulo = 'grid-column: 1 / -1; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--dark-slate); font-size: 1.2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem;';
+
+  // -------------------------------------------------------------------------
+  // CASO A: HÁ FILTROS ATIVOS -> Exibe a Seção "Atividades Filtradas"
+  // -------------------------------------------------------------------------
   if (temFiltroAtivo) {
+    const tituloFiltro = document.createElement('h3');
+    tituloFiltro.className = 'subtitulo-secao';
+    tituloFiltro.style.cssText = estiloSubtitulo;
+    tituloFiltro.textContent = '🔍 Atividades Filtradas';
+    sectionCronograma.appendChild(tituloFiltro);
+
     if (listaFiltrada.length === 0) {
       const aviso = document.createElement('div');
       aviso.className = 'aviso-vazio';
@@ -157,7 +168,7 @@ function renderizarCronograma(sectionCronograma, listaCompleta, filtros) {
       return;
     }
 
-    // Ordena os resultados da pesquisa cronologicamente por data e hora
+    // Ordena os resultados da pesquisa por data e horário de início
     listaFiltrada.sort((a, b) => `${a.data}T${a.horaInicio}`.localeCompare(`${b.data}T${b.horaInicio}`));
 
     listaFiltrada.forEach(item => {
@@ -166,7 +177,9 @@ function renderizarCronograma(sectionCronograma, listaCompleta, filtros) {
     return;
   }
 
-  // 3. CASO SEM FILTRO ATIVO: Foco padrão estrito em Hoje e Amanhã
+  // -------------------------------------------------------------------------
+  // CASO B: SEM FILTROS ATIVOS -> Visão Padrão (Hoje e Amanhã com títulos)
+  // -------------------------------------------------------------------------
   const atividadesHoje = listaFiltrada.filter(item => item.data === hojeDataStr);
   const atividadesAmanha = listaFiltrada.filter(item => item.data === amanhaDataStr);
 
@@ -174,13 +187,12 @@ function renderizarCronograma(sectionCronograma, listaCompleta, filtros) {
   atividadesHoje.sort(ordenarPorHora);
   atividadesAmanha.sort(ordenarPorHora);
 
-  if (atividadesHoje.length === 0 && atividadesAmanha.length === 0) {
-    const aviso = document.createElement('div');
-    aviso.className = 'aviso-vazio';
-    aviso.innerHTML = '<p>Nenhuma atividade agendada para hoje ou amanhã.</p>';
-    sectionCronograma.appendChild(aviso);
-    return;
-  }
+  // 1. Título e Lista do Dia Atual (HOJE)
+  const tituloHoje = document.createElement('h3');
+  tituloHoje.className = 'subtitulo-secao';
+  tituloHoje.style.cssText = estiloSubtitulo;
+  tituloHoje.textContent = '📌 Para Hoje';
+  sectionCronograma.appendChild(tituloHoje);
 
   if (atividadesHoje.length === 0) {
     const avisoHoje = document.createElement('div');
@@ -193,10 +205,11 @@ function renderizarCronograma(sectionCronograma, listaCompleta, filtros) {
     });
   }
 
+  // 2. Título e Lista do Dia Seguinte (AMANHÃ), se houver
   if (atividadesAmanha.length > 0) {
     const tituloAmanha = document.createElement('h3');
     tituloAmanha.className = 'subtitulo-secao';
-    tituloAmanha.style.cssText = 'grid-column: 1 / -1; margin-top: 2rem; color: var(--dark-slate); font-size: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;';
+    tituloAmanha.style.cssText = estiloSubtitulo;
     tituloAmanha.textContent = '📅 Para Amanhã';
     sectionCronograma.appendChild(tituloAmanha);
 
