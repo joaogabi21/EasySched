@@ -27,9 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderizarTudo();
 });
 
-/**
- * Retorna a data atual no formato 'YYYY-MM-DD' (fuso local).
- */
 function getHojeDataStr() {
   const hoje = new Date();
   const ano = hoje.getFullYear();
@@ -38,9 +35,6 @@ function getHojeDataStr() {
   return `${ano}-${mes}-${dia}`;
 }
 
-/**
- * Retorna a data de amanhã no formato 'YYYY-MM-DD' (fuso local).
- */
 function getAmanhaDataStr() {
   const amanha = new Date();
   amanha.setDate(amanha.getDate() + 1);
@@ -50,9 +44,6 @@ function getAmanhaDataStr() {
   return `${ano}-${mes}-${dia}`;
 }
 
-/**
- * Injeta a barra de pesquisa e filtros na interface.
- */
 function injetarBarraFiltros(sectionContainer, estadoFiltros, callbackRender) {
   const containerFiltros = document.createElement('div');
   containerFiltros.className = 'painel-filtros';
@@ -105,9 +96,6 @@ function injetarBarraFiltros(sectionContainer, estadoFiltros, callbackRender) {
   });
 }
 
-/**
- * Atualiza os contadores estritamente para as atividades do dia atual.
- */
 function renderizarResumo(sectionResumo, lista) {
   if (!sectionResumo) return;
 
@@ -131,7 +119,9 @@ function renderizarResumo(sectionResumo, lista) {
 }
 
 /**
- * Renderiza dinamicamente APENAS as atividades de Hoje e de Amanhã.
+ * Renderiza o cronograma:
+ * - Sem filtros ativos: exibe apenas o foco em Hoje e Amanhã.
+ * - Com filtros ativos (busca/categoria/status): pequisa em TODO o histórico registrado.
  */
 function renderizarCronograma(sectionCronograma, listaCompleta, filtros) {
   const cardsAntigos = sectionCronograma.querySelectorAll('article');
@@ -143,7 +133,9 @@ function renderizarCronograma(sectionCronograma, listaCompleta, filtros) {
   const hojeDataStr = getHojeDataStr();
   const amanhaDataStr = getAmanhaDataStr();
 
-  // 1. Aplicar Filtros de Busca, Categoria e Status
+  const temFiltroAtivo = filtros.busca !== '' || filtros.categoria !== 'todas' || filtros.status !== 'todos';
+
+  // 1. Filtrar lista por Termo de Busca, Categoria e Status
   const listaFiltrada = listaCompleta.filter(item => {
     const atendeBusca = !filtros.busca || 
       item.titulo.toLowerCase().includes(filtros.busca) || 
@@ -155,7 +147,26 @@ function renderizarCronograma(sectionCronograma, listaCompleta, filtros) {
     return atendeBusca && atendeCategoria && atendeStatus;
   });
 
-  // 2. Filtro Rigoroso: Apenas Hoje e Amanhã
+  // 2. CASO COM FILTRO ATIVO: Retorna todos os itens encontrados em qualquer data
+  if (temFiltroAtivo) {
+    if (listaFiltrada.length === 0) {
+      const aviso = document.createElement('div');
+      aviso.className = 'aviso-vazio';
+      aviso.innerHTML = '<p>Nenhuma atividade encontrada com os filtros selecionados.</p>';
+      sectionCronograma.appendChild(aviso);
+      return;
+    }
+
+    // Ordena os resultados da pesquisa cronologicamente por data e hora
+    listaFiltrada.sort((a, b) => `${a.data}T${a.horaInicio}`.localeCompare(`${b.data}T${b.horaInicio}`));
+
+    listaFiltrada.forEach(item => {
+      sectionCronograma.appendChild(criarCardAtividade(item));
+    });
+    return;
+  }
+
+  // 3. CASO SEM FILTRO ATIVO: Foco padrão estrito em Hoje e Amanhã
   const atividadesHoje = listaFiltrada.filter(item => item.data === hojeDataStr);
   const atividadesAmanha = listaFiltrada.filter(item => item.data === amanhaDataStr);
 
@@ -163,16 +174,14 @@ function renderizarCronograma(sectionCronograma, listaCompleta, filtros) {
   atividadesHoje.sort(ordenarPorHora);
   atividadesAmanha.sort(ordenarPorHora);
 
-  // Sem nenhuma atividade para hoje nem amanhã
   if (atividadesHoje.length === 0 && atividadesAmanha.length === 0) {
     const aviso = document.createElement('div');
     aviso.className = 'aviso-vazio';
-    aviso.innerHTML = '<p>Nenhuma atividade encontrada para hoje ou amanhã.</p>';
+    aviso.innerHTML = '<p>Nenhuma atividade agendada para hoje ou amanhã.</p>';
     sectionCronograma.appendChild(aviso);
     return;
   }
 
-  // 3. Renderizar Atividades de HOJE
   if (atividadesHoje.length === 0) {
     const avisoHoje = document.createElement('div');
     avisoHoje.className = 'aviso-vazio';
@@ -184,7 +193,6 @@ function renderizarCronograma(sectionCronograma, listaCompleta, filtros) {
     });
   }
 
-  // 4. Renderizar Seção de AMANHÃ (se existir alguma atividade cadastrada para amanhã)
   if (atividadesAmanha.length > 0) {
     const tituloAmanha = document.createElement('h3');
     tituloAmanha.className = 'subtitulo-secao';
@@ -198,9 +206,6 @@ function renderizarCronograma(sectionCronograma, listaCompleta, filtros) {
   }
 }
 
-/**
- * Cria a estrutura HTML do Card da Atividade.
- */
 function criarCardAtividade(item) {
   const article = document.createElement('article');
   article.dataset.id = item.id;
@@ -232,9 +237,6 @@ function criarCardAtividade(item) {
   return article;
 }
 
-/**
- * Renderiza Lembretes ativos para Hoje e Amanhã.
- */
 function renderizarLembretes(sectionLembretes, lista) {
   if (!sectionLembretes) return;
 
