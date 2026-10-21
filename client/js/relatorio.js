@@ -1,6 +1,6 @@
 /**
  * relatorio.js - Lógica de Cálculos e Filtros Temporais de Relatórios (relatorio.html)
- */
+*/
 
 document.addEventListener('DOMContentLoaded', () => {
   const selectPeriodo = document.getElementById('filtro-periodo');
@@ -138,10 +138,9 @@ function renderizarRelatorioCategorias(lista) {
   if (!tbody) return;
 
   const acumulador = {
-    'trabalho': { rotulo: 'Trabalho / Projetos', horas: 0 },
-    'estudos': { rotulo: 'Estudos', horas: 0 },
-    'saude': { rotulo: 'Saúde / Esportes', horas: 0 },
-    'lazer': { rotulo: 'Lazer', horas: 0 }
+    'trabalho': { rotulo: 'Trabalho', horas: 0 },
+    'estudos': { rotulo: 'Estudos / Projetos', horas: 0 },
+    'saude': { rotulo: 'Saúde / Lazer', horas: 0 },
   };
 
   lista.forEach(item => {

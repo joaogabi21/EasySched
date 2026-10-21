@@ -1,6 +1,6 @@
 /**
  * principal.js - Lógica do Dashboard e Cronograma Diário (principal.html)
- */
+*/
 
 document.addEventListener('DOMContentLoaded', () => {
   const estadoFiltros = {
@@ -56,10 +56,9 @@ function injetarBarraFiltros(sectionContainer, estadoFiltros, callbackRender) {
       <label for="filtro-categoria">Categoria:</label>
       <select id="filtro-categoria">
         <option value="todas">Todas as Categorias</option>
-        <option value="estudos">Estudos</option>
-        <option value="trabalho">Trabalho / Projetos</option>
-        <option value="saude">Saúde / Esportes</option>
-        <option value="lazer">Lazer</option>
+        <option value="estudos">Estudos / Projetos</option>
+        <option value="trabalho">Trabalho</option>
+        <option value="saude">Saúde / Lazer</option>
       </select>
     </div>
     <div class="grupo-filtro">

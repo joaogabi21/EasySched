@@ -1,6 +1,6 @@
 /**
  * storage.js - Gerenciamento de Estado e Persistência no LocalStorage (EasySched)
- */
+*/
 
 const STORAGE_KEY = 'easysched_atividades_v1';
 

@@ -1,6 +1,6 @@
 /**
  * atividade.js - Lógica de Cadastro e Validação de Formulário (atividade.html)
- */
+*/
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
@@ -53,10 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
   form.parentNode.insertBefore(feedbackContainer, form);
 
   const mapCategorias = {
-    'estudos': 'Estudos',
-    'trabalho': 'Trabalho / Projetos',
-    'saude': 'Saúde / Esportes',
-    'lazer': 'Lazer'
+    'estudos': 'Estudos / Projetos',
+    'trabalho': 'Trabalho',
+    'saude': 'Saúde / Lazer'
   };
 
   const mapStatus = {
@@ -152,10 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
     form.reset();
 
     atualizarRegrasPorStatus();
-
-    setTimeout(() => {
-      window.location.href = 'principal.html';
-    }, 1500);
   });
 
   form.addEventListener('input', (e) => {
