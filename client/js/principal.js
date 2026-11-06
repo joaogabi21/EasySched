@@ -1,221 +1,111 @@
 /**
- * principal.js - Lógica do Dashboard e Cronograma Diário (principal.html)
-*/
+ * principal.js - Lógica Assíncrona do Dashboard Completo (Etapa 05)
+ * Projeto: EasySched
+ */
+
+import { fetchAtividadesAPI, updateAtividadeAPI, deleteAtividadeAPI } from './api.js';
+
+let listaGlobalAtividades = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-  const estadoFiltros = {
-    busca: '',
-    categoria: 'todas',
-    status: 'todos'
-  };
-
-  const sectionResumo = document.querySelector('section[aria-labelledby="titulo-resumo"]');
-  const sectionCronograma = document.querySelector('section[aria-labelledby="titulo-cronograma"]');
-  const sectionLembretes = document.querySelector('section[aria-labelledby="titulo-lembretes"]');
-
-  if (!sectionCronograma) return;
-
-  injetarBarraFiltros(sectionCronograma, estadoFiltros, () => renderizarTudo());
-
-  function renderizarTudo() {
-    const lista = getAtividades();
-    renderizarResumo(sectionResumo, lista);
-    renderizarCronograma(sectionCronograma, lista, estadoFiltros);
-    renderizarLembretes(sectionLembretes, lista);
-  }
-
-  renderizarTudo();
+  carregarDashboard();
 });
 
-function getHojeDataStr() {
-  const hoje = new Date();
-  const ano = hoje.getFullYear();
-  const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-  const dia = String(hoje.getDate()).padStart(2, '0');
-  return `${ano}-${mes}-${dia}`;
-}
+/**
+ * Consulta a API e atualiza todas as seções do Dashboard
+ */
+async function carregarDashboard() {
+  const secaoResumo = document.getElementById('secao-resumo') || 
+                      document.querySelector('section[aria-labelledby="titulo-resumo"]');
+  const secaoCronograma = document.getElementById('secao-cronograma') || 
+                         document.querySelector('section[aria-labelledby="titulo-cronograma"]');
+  const secaoLembretes = document.getElementById('secao-lembretes') || 
+                        document.querySelector('section[aria-labelledby="titulo-lembretes"]');
 
-function getAmanhaDataStr() {
-  const amanha = new Date();
-  amanha.setDate(amanha.getDate() + 1);
-  const ano = amanha.getFullYear();
-  const mes = String(amanha.getMonth() + 1).padStart(2, '0');
-  const dia = String(amanha.getDate()).padStart(2, '0');
-  return `${ano}-${mes}-${dia}`;
-}
+  // Estado de Carregamento (Loading)
+  if (secaoCronograma) {
+    exibirMensagemContainer(secaoCronograma, '⏳ Carregando compromissos...', 'info');
+  }
 
-function injetarBarraFiltros(sectionContainer, estadoFiltros, callbackRender) {
-  const containerFiltros = document.createElement('div');
-  containerFiltros.className = 'painel-filtros';
-  containerFiltros.innerHTML = `
-    <div class="grupo-filtro">
-      <label for="filtro-busca">Pesquisar:</label>
-      <input type="text" id="filtro-busca" placeholder="Buscar por título ou descrição...">
-    </div>
-    <div class="grupo-filtro">
-      <label for="filtro-categoria">Categoria:</label>
-      <select id="filtro-categoria">
-        <option value="todas">Todas as Categorias</option>
-        <option value="estudos">Estudos / Projetos</option>
-        <option value="trabalho">Trabalho</option>
-        <option value="saude">Saúde / Lazer</option>
-      </select>
-    </div>
-    <div class="grupo-filtro">
-      <label for="filtro-status">Status:</label>
-      <select id="filtro-status">
-        <option value="todos">Todos os Status</option>
-        <option value="pendente">Pendente</option>
-        <option value="em_andamento">Em Andamento</option>
-        <option value="concluido">Concluído</option>
-      </select>
-    </div>
-  `;
+  try {
+    // Consulta GET assíncrona na API
+    listaGlobalAtividades = await fetchAtividadesAPI();
 
-  const titulo = sectionContainer.querySelector('h2');
-  titulo.insertAdjacentElement('afterend', containerFiltros);
+    // Renderiza cada uma das 3 seções do Dashboard
+    if (secaoResumo) renderizarResumoHoje(secaoResumo, listaGlobalAtividades);
+    if (secaoCronograma) renderizarCronograma(secaoCronograma, listaGlobalAtividades);
+    if (secaoLembretes) renderizarLembretes(secaoLembretes, listaGlobalAtividades);
 
-  const inputBusca = containerFiltros.querySelector('#filtro-busca');
-  const selectCategoria = containerFiltros.querySelector('#filtro-categoria');
-  const selectStatus = containerFiltros.querySelector('#filtro-status');
-
-  inputBusca.addEventListener('input', (e) => {
-    estadoFiltros.busca = e.target.value.toLowerCase().trim();
-    callbackRender();
-  });
-
-  selectCategoria.addEventListener('change', (e) => {
-    estadoFiltros.categoria = e.target.value;
-    callbackRender();
-  });
-
-  selectStatus.addEventListener('change', (e) => {
-    estadoFiltros.status = e.target.value;
-    callbackRender();
-  });
-}
-
-function renderizarResumo(sectionResumo, lista) {
-  if (!sectionResumo) return;
-
-  const hojeDataStr = getHojeDataStr();
-  const listaHoje = lista.filter(item => item.data === hojeDataStr);
-
-  const total = listaHoje.length;
-  const concluidas = listaHoje.filter(item => item.status === 'concluido').length;
-  const emAndamento = listaHoje.filter(item => item.status === 'em_andamento').length;
-  const pendentes = listaHoje.filter(item => item.status === 'pendente').length;
-
-  const ul = sectionResumo.querySelector('ul');
-  if (ul) {
-    ul.innerHTML = `
-      <li><strong>Total de Atividades Hoje:</strong> <span>${total}</span></li>
-      <li><strong>Concluídas:</strong> <span>${concluidas}</span></li>
-      <li><strong>Em Andamento:</strong> <span>${emAndamento}</span></li>
-      <li><strong>Pendentes:</strong> <span>${pendentes}</span></li>
-    `;
+  } catch (erro) {
+    if (secaoCronograma) {
+      exibirMensagemContainer(secaoCronograma, 'Não foi possível carregar os dados. Verifique a conexão com o servidor.', 'erro');
+    }
+    console.error('Erro ao carregar o dashboard:', erro);
   }
 }
 
-/**
- * Renderiza o cronograma:
- * - Sem filtros: exibe blocos rotulados "📌 Para Hoje" e "📅 Para Amanhã".
- * - Com filtros: exibe o bloco "🔍 Atividades Filtradas" com o resultado da busca global.
- */
-function renderizarCronograma(sectionCronograma, listaCompleta, filtros) {
-  const cardsAntigos = sectionCronograma.querySelectorAll('article');
-  cardsAntigos.forEach(card => card.remove());
+// --------------------------------------------------------------------------
+// 1. SEÇÃO RESUMO DE HOJE
+// --------------------------------------------------------------------------
+function renderizarResumoHoje(container, lista) {
+  const hojeStr = getHojeDataStr();
+  const atividadesHoje = lista.filter(item => item.data === hojeStr);
 
-  const avisosAntigos = sectionCronograma.querySelectorAll('.aviso-vazio, .subtitulo-secao');
-  avisosAntigos.forEach(el => el.remove());
+  const totalHoje = atividadesHoje.length;
+  const concluidasHoje = atividadesHoje.filter(i => i.status === 'concluido').length;
+  const emAndamentoHoje = atividadesHoje.filter(i => i.status === 'em_andamento').length;
+  const pendentesHoje = atividadesHoje.filter(i => i.status === 'pendente').length;
 
-  const hojeDataStr = getHojeDataStr();
-  const amanhaDataStr = getAmanhaDataStr();
+  const header = container.querySelector('h2');
+  container.innerHTML = '';
+  if (header) container.appendChild(header);
 
-  const temFiltroAtivo = filtros.busca !== '' || filtros.categoria !== 'todas' || filtros.status !== 'todos';
-
-  // 1. Aplica os filtros de busca, categoria e status
-  const listaFiltrada = listaCompleta.filter(item => {
-    const atendeBusca = !filtros.busca || 
-      item.titulo.toLowerCase().includes(filtros.busca) || 
-      item.descricao.toLowerCase().includes(filtros.busca);
-
-    const atendeCategoria = filtros.categoria === 'todas' || item.categoria === filtros.categoria;
-    const atendeStatus = filtros.status === 'todos' || item.status === filtros.status;
-
-    return atendeBusca && atendeCategoria && atendeStatus;
-  });
-
-  // Estilo padrão para os subtítulos do cronograma
-  const estiloSubtitulo = 'grid-column: 1 / -1; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--dark-slate); font-size: 1.2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem;';
-
-  // -------------------------------------------------------------------------
-  // CASO A: HÁ FILTROS ATIVOS -> Exibe a Seção "Atividades Filtradas"
-  // -------------------------------------------------------------------------
-  if (temFiltroAtivo) {
-    const tituloFiltro = document.createElement('h3');
-    tituloFiltro.className = 'subtitulo-secao';
-    tituloFiltro.style.cssText = estiloSubtitulo;
-    tituloFiltro.textContent = '🔍 Atividades Filtradas';
-    sectionCronograma.appendChild(tituloFiltro);
-
-    if (listaFiltrada.length === 0) {
-      const aviso = document.createElement('div');
-      aviso.className = 'aviso-vazio';
-      aviso.innerHTML = '<p>Nenhuma atividade encontrada com os filtros selecionados.</p>';
-      sectionCronograma.appendChild(aviso);
-      return;
-    }
-
-    // Ordena os resultados da pesquisa por data e horário de início
-    listaFiltrada.sort((a, b) => `${a.data}T${a.horaInicio}`.localeCompare(`${b.data}T${b.horaInicio}`));
-
-    listaFiltrada.forEach(item => {
-      sectionCronograma.appendChild(criarCardAtividade(item));
-    });
+  if (totalHoje === 0) {
+    container.innerHTML += `<p class="mensagem-vazia">Nenhuma atividade agendada para o dia de hoje.</p>`;
     return;
   }
 
-  // -------------------------------------------------------------------------
-  // CASO B: SEM FILTROS ATIVOS -> Visão Padrão (Hoje e Amanhã com títulos)
-  // -------------------------------------------------------------------------
-  const atividadesHoje = listaFiltrada.filter(item => item.data === hojeDataStr);
-  const atividadesAmanha = listaFiltrada.filter(item => item.data === amanhaDataStr);
+  const divResumo = document.createElement('div');
+  divResumo.className = 'cards-resumo-container';
+  divResumo.innerHTML = `
+    <article class="card-resumo-item">
+      <h4>Total de Hoje</h4>
+      <p><strong>${totalHoje}</strong></p>
+    </article>
+    <article class="card-resumo-item">
+      <h4>Concluídas</h4>
+      <p><strong>${concluidasHoje}</strong></p>
+    </article>
+    <article class="card-resumo-item">
+      <h4>Em Andamento</h4>
+      <p><strong>${emAndamentoHoje}</strong></p>
+    </article>
+    <article class="card-resumo-item">
+      <h4>Pendentes</h4>
+      <p><strong>${pendentesHoje}</strong></p>
+    </article>
+  `;
 
-  const ordenarPorHora = (a, b) => a.horaInicio.localeCompare(b.horaInicio);
-  atividadesHoje.sort(ordenarPorHora);
-  atividadesAmanha.sort(ordenarPorHora);
+  container.appendChild(divResumo);
+}
 
-  // 1. Título e Lista do Dia Atual (HOJE)
-  const tituloHoje = document.createElement('h3');
-  tituloHoje.className = 'subtitulo-secao';
-  tituloHoje.style.cssText = estiloSubtitulo;
-  tituloHoje.textContent = '📌 Para Hoje';
-  sectionCronograma.appendChild(tituloHoje);
+// --------------------------------------------------------------------------
+// 2. SEÇÃO CRONOGRAMA DIÁRIO
+// --------------------------------------------------------------------------
+function renderizarCronograma(container, lista) {
+  const header = container.querySelector('h2');
+  container.innerHTML = '';
+  if (header) container.appendChild(header);
 
-  if (atividadesHoje.length === 0) {
-    const avisoHoje = document.createElement('div');
-    avisoHoje.className = 'aviso-vazio';
-    avisoHoje.innerHTML = '<p>Nenhuma atividade agendada para hoje.</p>';
-    sectionCronograma.appendChild(avisoHoje);
-  } else {
-    atividadesHoje.forEach(item => {
-      sectionCronograma.appendChild(criarCardAtividade(item));
-    });
+  if (lista.length === 0) {
+    container.innerHTML += `<p class="mensagem-vazia">Nenhuma atividade cadastrada no momento.</p>`;
+    return;
   }
 
-  // 2. Título e Lista do Dia Seguinte (AMANHÃ), se houver
-  if (atividadesAmanha.length > 0) {
-    const tituloAmanha = document.createElement('h3');
-    tituloAmanha.className = 'subtitulo-secao';
-    tituloAmanha.style.cssText = estiloSubtitulo;
-    tituloAmanha.textContent = '📅 Para Amanhã';
-    sectionCronograma.appendChild(tituloAmanha);
-
-    atividadesAmanha.forEach(item => {
-      sectionCronograma.appendChild(criarCardAtividade(item));
-    });
-  }
+  lista.forEach(item => {
+    const card = criarCardAtividade(item);
+    container.appendChild(card);
+  });
 }
 
 function criarCardAtividade(item) {
@@ -229,17 +119,17 @@ function criarCardAtividade(item) {
   if (item.status === 'em_andamento') {
     botoesAcao += `<button type="button" class="btn-concluir" onclick="acaoMudarStatus('${item.id}', 'concluido')">Concluir</button>`;
   }
+  
+  botoesAcao += `<a href="atividade.html?id=${item.id}" class="btn-editar button-like">Editar</a>`;
   botoesAcao += `<button type="button" class="btn-excluir" onclick="acaoExcluir('${item.id}')">Excluir</button>`;
-
-  const dataFormatada = new Date(item.data + 'T00:00:00').toLocaleDateString('pt-BR');
 
   article.innerHTML = `
     <header>
       <h3>${escapeHtml(item.titulo)}</h3>
-      <p>Data: ${dataFormatada} | Horário: ${item.horaInicio} às ${item.horaFim}</p>
+      <p>Data: ${formatarDataBR(item.data)} | Horário: ${item.horaInicio} às ${item.horaFim}</p>
     </header>
-    <p><strong>Categoria:</strong> <mark>${escapeHtml(item.categoriaRotulo)}</mark></p>
-    <p><strong>Status:</strong> <span class="badge-status status-${item.status}">${escapeHtml(item.statusRotulo)}</span></p>
+    <p><strong>Categoria:</strong> <mark>${escapeHtml(item.categoriaRotulo || item.categoria)}</mark></p>
+    <p><strong>Status:</strong> <span class="badge-status status-${item.status}">${escapeHtml(item.statusRotulo || item.status)}</span></p>
     <p>${escapeHtml(item.descricao)}</p>
     <footer>
       ${botoesAcao}
@@ -249,61 +139,114 @@ function criarCardAtividade(item) {
   return article;
 }
 
-function renderizarLembretes(sectionLembretes, lista) {
-  if (!sectionLembretes) return;
+// --------------------------------------------------------------------------
+// 3. SEÇÃO PRÓXIMOS LEMBRETES
+// --------------------------------------------------------------------------
+function renderizarLembretes(container, lista) {
+  const lembretes = lista.filter(item => item.ativarLembrete === true || item.ativarLembrete === 'true');
 
-  const cardsAntigos = sectionLembretes.querySelectorAll('article');
-  cardsAntigos.forEach(card => card.remove());
+  const header = container.querySelector('h2');
+  container.innerHTML = '';
+  if (header) container.appendChild(header);
 
-  const hojeDataStr = getHojeDataStr();
-  const amanhaDataStr = getAmanhaDataStr();
-
-  const lembretesAtivos = lista.filter(item => 
-    item.ativarLembrete && 
-    item.status !== 'concluido' && 
-    (item.data === hojeDataStr || item.data === amanhaDataStr)
-  );
-
-  if (lembretesAtivos.length === 0) {
-    const cardVazio = document.createElement('article');
-    cardVazio.innerHTML = '<p><small>Nenhum lembrete pendente para hoje ou amanhã.</small></p>';
-    sectionLembretes.appendChild(cardVazio);
+  if (lembretes.length === 0) {
+    container.innerHTML += `<p class="mensagem-vazia">Nenhum lembrete configurado.</p>`;
     return;
   }
 
-  lembretesAtivos.forEach(item => {
+  lembretes.forEach(item => {
     const article = document.createElement('article');
-    const dataFormatada = new Date(item.data + 'T00:00:00').toLocaleDateString('pt-BR');
     article.innerHTML = `
-      <h3>Alerta: ${escapeHtml(item.titulo)}</h3>
-      <p><strong>Data:</strong> ${dataFormatada}</p>
-      <p><strong>Horário do Evento:</strong> ${item.horaInicio}</p>
-      <p><strong>Disparo:</strong> ${item.antecedencia} minutos antes</p>
+      <header>
+        <h3>${escapeHtml(item.titulo)}</h3>
+        <p>Data: ${formatarDataBR(item.data)} | às ${item.horaInicio}</p>
+      </header>
+      <p><strong>Antecedência:</strong> ${item.antecedencia || 15} minutos antes</p>
+      <p><strong>Canal:</strong> ${escapeHtml(item.canalAlerta || 'Navegador')}</p>
     `;
-    sectionLembretes.appendChild(article);
+    container.appendChild(article);
   });
 }
 
-window.acaoMudarStatus = function(id, novoStatus) {
-  updateStatusAtividade(id, novoStatus);
-  window.location.reload();
-};
+// --------------------------------------------------------------------------
+// AÇÕES GLOBAIS DA API (EXPOSTAS NO WINDOW PARA O EVENTO ONCLICK)
+// --------------------------------------------------------------------------
+window.acaoMudarStatus = async function(id, novoStatus) {
+  const itemOriginal = listaGlobalAtividades.find(i => String(i.id) === String(id));
+  if (!itemOriginal) return;
 
-window.acaoExcluir = function(id) {
-  if (confirm('Tem certeza de que deseja excluir esta atividade?')) {
-    deleteAtividade(id);
-    window.location.reload();
+  const mapRotulos = {
+    'pendente': 'Pendente',
+    'em_andamento': 'Em Andamento',
+    'concluido': 'Concluído'
+  };
+
+  const itemAtualizado = {
+    ...itemOriginal,
+    status: novoStatus,
+    statusRotulo: mapRotulos[novoStatus] || novoStatus
+  };
+
+  try {
+    await updateAtividadeAPI(id, itemAtualizado);
+    await carregarDashboard();
+  } catch (erro) {
+    alert('Erro ao alterar status da atividade.');
+    console.error(erro);
   }
 };
 
-function escapeHtml(str) {
-  return str.replace(/[&<>"']/g, function(m) {
-    return {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#039;'
-    }[m];
-  });
+window.acaoExcluir = async function(id) {
+  if (!confirm('Deseja realmente excluir esta atividade?')) return;
+
+  try {
+    await deleteAtividadeAPI(id);
+    await carregarDashboard();
+  } catch (erro) {
+    alert('Erro ao excluir atividade.');
+    console.error(erro);
+  }
+};
+
+// --------------------------------------------------------------------------
+// FUNÇÕES UTILITÁRIAS
+// --------------------------------------------------------------------------
+function getHojeDataStr() {
+  const hoje = new Date();
+  const ano = hoje.getFullYear();
+  const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+  const dia = String(hoje.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
+}
+
+function formatarDataBR(dataStr) {
+  if (!dataStr) return '';
+  if (dataStr.includes('-')) {
+    const [a, m, d] = dataStr.split('-');
+    return `${d}/${m}/${a}`;
+  }
+  return dataStr;
+}
+
+function exibirMensagemContainer(container, mensagem, tipo) {
+  const header = container.querySelector('h2');
+  container.innerHTML = '';
+  if (header) container.appendChild(header);
+
+  const banner = document.createElement('div');
+  banner.className = `mensagem-banner ${tipo === 'erro' ? 'mensagem-erro' : ''}`;
+  banner.style.padding = '1rem';
+  banner.style.margin = '1rem 0';
+  banner.innerHTML = `<p>${mensagem}</p>`;
+  container.appendChild(banner);
+}
+
+function escapeHtml(texto) {
+  if (!texto) return '';
+  return String(texto)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }

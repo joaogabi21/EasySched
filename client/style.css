@@ -9,7 +9,7 @@
   --dark-slate: #0f172a;       /* Slate Escuro */
   --text-main: #334155;        /* Grafite para leitura */
   --text-muted: #64748b;       /* Cinza Secundário */
-  --bg-main: #f8fafc;          /* Fundo suave off-white */
+  --bg-main: #ffffff;          /* Fundo suave off-white */
   --bg-card: #ffffff;          /* Fundo dos Cards */
   --border-color: #e2e8f0;
 
@@ -150,6 +150,62 @@ section[aria-labelledby="titulo-resumo"] li strong {
   letter-spacing: 0.05em;
 }
 
+/* Layout Base: Smartphone (1 coluna) */
+.cards-resumo-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Tablet (2 colunas - 2x2) */
+@media (min-width: 640px) {
+  .cards-resumo-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Notebook / Desktop (4 colunas lado a lado) */
+@media (min-width: 1024px) {
+  .cards-resumo-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Estilização dos Quadrinhos de Resumo */
+.card-resumo-item {
+  background-color: #1e293b;
+  color: #f8fafc;
+  padding: 1.25rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-resumo-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-resumo-item h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  margin: 0 0 0.5rem 0;
+}
+
+.card-resumo-item p {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+}
+
 /* --------------------------------------------------------------------------
    6. CRONOGRAMA DIÁRIO & CARDS DE ATIVIDADES
    -------------------------------------------------------------------------- */
@@ -258,6 +314,19 @@ button[type="button"] {
 button[type="button"]:hover {
   background-color: #e2e8f0;
   color: var(--dark-slate);
+}
+
+/* Botão Editar (Amber / Alerta Amarelo-Alaranjado) */
+.btn-editar {
+  background-color: #f59e0b;
+  color: #ffffff;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn-editar:hover {
+  background-color: #d97706;
 }
 
 /* --------------------------------------------------------------------------

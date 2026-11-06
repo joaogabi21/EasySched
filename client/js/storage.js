@@ -70,3 +70,26 @@ function deleteAtividade(id) {
   const listaFiltrada = lista.filter(item => item.id !== id);
   saveAtividades(listaFiltrada);
 }
+
+/**
+ * Busca uma atividade específica pelo ID.
+ * @param {string} id - ID da atividade
+ * @returns {Object|null} Retorna a atividade ou null se não for encontrada.
+ */
+function getAtividadeById(id) {
+  const lista = getAtividades();
+  return lista.find(item => item.id === id) || null;
+}
+
+/**
+ * Atualiza os dados de uma atividade existente no localStorage.
+ * @param {Object} atividadeAtualizada - Objeto da atividade com dados alterados
+ */
+function updateAtividade(atividadeAtualizada) {
+  const lista = getAtividades();
+  const index = lista.findIndex(item => item.id === atividadeAtualizada.id);
+  if (index !== -1) {
+    lista[index] = atividadeAtualizada;
+    saveAtividades(lista);
+  }
+}
