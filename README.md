@@ -25,7 +25,7 @@ EasySched/
 ├── relatorio.html        # Relatórios dinâmicos de progresso e distribuição de tempo
 ├── styles.css            # Estilização global, responsiva (Breakpoints 768px/1024px) e componentes
 ├── js/
-│   ├── storage.js        # Camada de persistência e gerenciamento do LocalStorage
+│   ├── api.js        
 │   ├── principal.js      # Lógica do cronograma, filtros, ordenação e contadores do dia
 │   ├── atividade.js      # Lógica de validação em tempo real e submissão do formulário
 │   └── relatorio.js      # Lógica dos relatórios temporais e recálculo de métricas
