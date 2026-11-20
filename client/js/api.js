@@ -3,7 +3,7 @@
  */
 
 // Cole aqui a URL gerada pelo seu MockAPI.io
-const API_BASE_URL = 'https://6aed1e42fc3b911e6fd5f00e.mockapi.io/api/v1/atividades';
+const API_BASE_URL = 'http://localhost:3000/api/atividades';
 
 /**
  * GET: Consulta a lista completa de atividades no servidor.

@@ -1,0 +1,50 @@
+@baseUrl = http://localhost:3000/api/atividades
+
+### 1. Listar todas as atividades (GET - 200 OK)
+GET {{baseUrl}}
+
+### 2. Consultar atividade por ID (GET - 200 OK)
+GET {{baseUrl}}/1
+
+### 3. Criar nova atividade (POST - 201 Created)
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "titulo": "Estudar API REST",
+  "descricao": "Testar endpoints da Etapa 06",
+  "data": "2026-11-20",
+  "horaInicio": "09:00",
+  "horaFim": "11:00",
+  "categoria": "estudos",
+  "status": "pendente",
+  "ativarLembrete": true,
+  "antecedencia": "30",
+  "canalAlerta": "navegador"
+}
+
+### 4. Atualizar atividade existente (PUT - 200 OK)
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "titulo": "Revisão de Desenvolvimento Web (Atualizada)",
+  "descricao": "API REST validada com sucesso",
+  "data": "2026-11-20",
+  "horaInicio": "14:00",
+  "horaFim": "16:00",
+  "categoria": "estudos",
+  "status": "concluido",
+  "ativarLembrete": false,
+  "antecedencia": "15",
+  "canalAlerta": "navegador"
+}
+
+### 5. Excluir atividade (DELETE - 200 OK)
+DELETE {{baseUrl}}/1
+
+### 6. Teste de erro de validação (POST - 400 Bad Request)
+POST {{baseUrl}}
+Content-Type: application/json
+
+{}
