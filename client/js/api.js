@@ -1,81 +1,89 @@
-/**
- * api.js - Módulo de Comunicação Assíncrona via Fetch API (Etapa 05)
- */
+const API_BASE_URL = 'http://localhost:3000/api';
 
-// Cole aqui a URL gerada pelo seu MockAPI.io
-const API_BASE_URL = 'http://localhost:3000/api/atividades';
+async function tratarResposta(response) {
+  const dados = await response.json().catch(() => ({}));
 
-/**
- * GET: Consulta a lista completa de atividades no servidor.
- */
-export async function fetchAtividadesAPI() {
-  const response = await fetch(API_BASE_URL);
   if (!response.ok) {
-    throw new Error(`Erro na consulta (${response.status}): ${response.statusText}`);
+    const detalhes = Array.isArray(dados.detalhes) ? ` (${dados.detalhes.join(' ')})` : '';
+    const mensagem = (dados.erro || `Erro HTTP ${response.status}`) + detalhes;
+    throw new Error(mensagem);
   }
-  return await response.json();
+
+  return dados;
 }
 
-/**
- * GET por ID: Consulta uma única atividade no servidor.
- */
-export async function fetchAtividadeByIdAPI(id) {
-  const response = await fetch(`${API_BASE_URL}/${id}`);
-  if (!response.ok) {
-    throw new Error(`Erro ao buscar atividade #${id} (${response.status})`);
-  }
-  return await response.json();
+// ==========================================
+// Endpoints de Categorias (/api/categorias)
+// ==========================================
+
+export async function listarCategorias() {
+  const response = await fetch(`${API_BASE_URL}/categorias`);
+  return tratarResposta(response);
 }
 
-/**
- * POST: Cadastra uma nova atividade no servidor.
- */
-export async function createAtividadeAPI(novaAtividade) {
-  const response = await fetch(API_BASE_URL, {
+export async function criarCategoria(dadosCategoria) {
+  const response = await fetch(`${API_BASE_URL}/categorias`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(novaAtividade)
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dadosCategoria)
   });
-
-  if (!response.ok) {
-    throw new Error(`Erro ao cadastrar atividade (${response.status})`);
-  }
-
-  return await response.json();
+  return tratarResposta(response);
 }
 
-/**
- * PUT: Atualiza uma atividade existente no servidor.
- */
-export async function updateAtividadeAPI(id, atividadeAtualizada) {
-  const response = await fetch(`${API_BASE_URL}/${id}`, {
+// ==========================================
+// Endpoints de Atividades (/api/atividades)
+// ==========================================
+
+export async function listarAtividades() {
+  const response = await fetch(`${API_BASE_URL}/atividades`);
+  return tratarResposta(response);
+}
+
+export async function buscarAtividadePorId(id) {
+  const response = await fetch(`${API_BASE_URL}/atividades/${id}`);
+  return tratarResposta(response);
+}
+
+export async function criarAtividade(dadosAtividade) {
+  const response = await fetch(`${API_BASE_URL}/atividades`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dadosAtividade)
+  });
+  return tratarResposta(response);
+}
+
+export async function atualizarAtividade(id, dadosAtividade) {
+  const response = await fetch(`${API_BASE_URL}/atividades/${id}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(atividadeAtualizada)
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dadosAtividade)
   });
-
-  if (!response.ok) {
-    throw new Error(`Erro ao atualizar atividade #${id} (${response.status})`);
-  }
-
-  return await response.json();
+  return tratarResposta(response);
 }
 
-/**
- * DELETE: Remove uma atividade do servidor.
- */
-export async function deleteAtividadeAPI(id) {
-  const response = await fetch(`${API_BASE_URL}/${id}`, {
+export async function excluirAtividade(id) {
+  const response = await fetch(`${API_BASE_URL}/atividades/${id}`, {
     method: 'DELETE'
   });
-
-  if (!response.ok) {
-    throw new Error(`Erro ao excluir atividade #${id} (${response.status})`);
-  }
-
-  return await response.json();
+  return tratarResposta(response);
 }
+
+// Aliases para compatibilidade com principal.js e relatorio.js
+export {
+  listarAtividades as fetchAtividadesAPI,
+  listarAtividades as getAtividadesAPI,
+  listarAtividades as listarAtividadesAPI,
+  listarAtividades as obterAtividadesAPI,
+  buscarAtividadePorId as fetchAtividadeByIdAPI,
+  buscarAtividadePorId as fetchAtividadePorIdAPI,
+  buscarAtividadePorId as getAtividadeByIdAPI,
+  buscarAtividadePorId as buscarAtividadePorIdAPI,
+  criarAtividade as createAtividadeAPI,
+  criarAtividade as criarAtividadeAPI,
+  atualizarAtividade as updateAtividadeAPI,
+  atualizarAtividade as atualizarAtividadeAPI,
+  excluirAtividade as deleteAtividadeAPI,
+  excluirAtividade as excluirAtividadeAPI,
+  excluirAtividade as removerAtividadeAPI
+};

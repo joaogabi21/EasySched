@@ -1,2 +1,22 @@
+# Dependências do Node.js
 node_modules/
+
+# Banco de dados SQLite e arquivos temporários de transação
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Variáveis de ambiente
 .env
+.env.local
+
+# Logs de execução
+npm-debug.log*
+*.log
+
+# Arquivos de sistema operacional
+.DS_Store
+Thumbs.db

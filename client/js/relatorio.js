@@ -1,223 +1,234 @@
-/**
- * relatorio.js - Lógica de Cálculos e Filtros Temporais de Relatórios (relatorio.html)
-*/
+import { listarAtividades, listarCategorias } from './api.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const selectPeriodo = document.getElementById('filtro-periodo');
-  
-  // Função que atualiza todos os relatórios com base no período selecionado
-  function atualizarRelatorios() {
-    const listaCompleta = getAtividades();
-    const periodoSelecionado = selectPeriodo ? selectPeriodo.value : 'semana';
-    
-    // Filtrar a lista pelo intervalo temporal
-    const listaFiltrada = filtrarPorPeriodo(listaCompleta, periodoSelecionado);
+const CATEGORIAS_PADRAO = [
+  { id: 1, slug: 'estudos', nome: 'Estudos', cor: '#2563eb' },
+  { id: 2, slug: 'trabalho', nome: 'Trabalho', cor: '#7c3aed' },
+  { id: 3, slug: 'saude', nome: 'Saúde', cor: '#16a34a' },
+  { id: 4, slug: 'lazer', nome: 'Lazer', cor: '#ea580c' }
+];
 
-    renderizarProgressoGeral(listaFiltrada, periodoSelecionado);
-    renderizarRelatorioCategorias(listaFiltrada);
-    renderizarRelatorioStatus(listaFiltrada);
-  }
+function escaparHtml(texto) {
+  const div = document.createElement('div');
+  div.textContent = texto ?? '';
+  return div.innerHTML;
+}
 
-  // Event listener para mudança de filtro
-  if (selectPeriodo) {
-    selectPeriodo.addEventListener('change', atualizarRelatorios);
-  }
+function calcularDuracaoMinutos(horaInicio, horaFim) {
+  if (!horaInicio || !horaFim) return 0;
 
-  // Renderização inicial
-  atualizarRelatorios();
-});
+  const [hIni, mIni] = horaInicio.split(':').map(Number);
+  const [hFim, mFim] = horaFim.split(':').map(Number);
 
-/**
- * Filtra o array de atividades conforme o período selecionado.
- */
-function filtrarPorPeriodo(lista, periodo) {
-  const agora = new Date();
-  
-  return lista.filter(item => {
-    if (!item.data) return false;
-    
-    const [ano, mes, dia] = item.data.split('-').map(Number);
-    const dataItem = new Date(ano, mes - 1, dia);
+  if ([hIni, mIni, hFim, mFim].some(Number.isNaN)) return 0;
+
+  const inicio = hIni * 60 + mIni;
+  const fim = hFim * 60 + mFim;
+  return fim > inicio ? fim - inicio : 0;
+}
+
+function formatarHoras(minutosTotais) {
+  const horas = Math.floor(minutosTotais / 60);
+  const minutos = minutosTotais % 60;
+
+  if (minutosTotais === 0) return '0h';
+  if (minutos === 0) return `${horas}h`;
+  if (horas === 0) return `${minutos}min`;
+  return `${horas}h ${minutos}min`;
+}
+
+function parseDataLocal(dataIso) {
+  if (!dataIso) return null;
+  const [ano, mes, dia] = dataIso.split('-').map(Number);
+  if ([ano, mes, dia].some(Number.isNaN)) return null;
+  return new Date(ano, mes - 1, dia);
+}
+
+function filtrarPorPeriodo(atividades, periodo) {
+  if (!periodo || periodo === 'todos') return atividades;
+
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+
+  return atividades.filter((item) => {
+    const dataItem = parseDataLocal(item.data);
+    if (!dataItem) return false;
 
     if (periodo === 'dia') {
-      return dataItem.toDateString() === agora.toDateString();
+      return dataItem.getTime() === hoje.getTime();
     }
 
     if (periodo === 'semana') {
-      const diaSemana = agora.getDay();
-      const diffSegunda = agora.getDate() - diaSemana + (diaSemana === 0 ? -6 : 1);
-      
-      const inicioSemana = new Date(agora.getFullYear(), agora.getMonth(), diffSegunda, 0, 0, 0);
+      const inicioSemana = new Date(hoje);
+      inicioSemana.setDate(hoje.getDate() - hoje.getDay()); // Domingo
       const fimSemana = new Date(inicioSemana);
-      fimSemana.setDate(inicioSemana.getDate() + 6);
-      fimSemana.setHours(23, 59, 59, 999);
-
+      fimSemana.setDate(inicioSemana.getDate() + 6); // Sábado
       return dataItem >= inicioSemana && dataItem <= fimSemana;
     }
 
     if (periodo === 'mes') {
-      return dataItem.getFullYear() === agora.getFullYear() && dataItem.getMonth() === agora.getMonth();
+      return (
+        dataItem.getMonth() === hoje.getMonth() &&
+        dataItem.getFullYear() === hoje.getFullYear()
+      );
     }
 
     if (periodo === 'ano') {
-      return dataItem.getFullYear() === agora.getFullYear();
+      return dataItem.getFullYear() === hoje.getFullYear();
     }
 
     return true;
   });
 }
 
-/**
- * Renderiza o progresso de conclusão do período ajustado para o container #card-progresso.
- */
-function renderizarProgressoGeral(lista, periodo) {
+function renderizarCardProgresso(atividades) {
   const cardProgresso = document.getElementById('card-progresso');
   if (!cardProgresso) return;
 
-  const total = lista.length;
-  const concluidas = lista.filter(item => item.status === 'concluido').length;
+  const total = atividades.length;
+  const concluidas = atividades.filter((a) => a.status === 'concluido').length;
   const percentual = total > 0 ? Math.round((concluidas / total) * 100) : 0;
-
-  const titulosPeriodo = {
-    'dia': 'no Dia de Hoje',
-    'semana': 'na Semana',
-    'mes': 'no Mês Atual',
-    'ano': 'no Ano Atual',
-    'todos': 'em Todo o Histórico'
-  };
-
-  if (total === 0) {
-    cardProgresso.innerHTML = `
-      <h3>Conclusão Geral de Compromissos</h3>
-      <p>Nenhuma atividade registrada para o período selecionado (${titulosPeriodo[periodo] || 'selecionado'}).</p>
-    `;
-    return;
-  }
+  const minutosTotais = atividades.reduce(
+    (soma, a) => soma + calcularDuracaoMinutos(a.horaInicio, a.horaFim),
+    0
+  );
 
   cardProgresso.innerHTML = `
-    <h3>Conclusão Geral de Compromissos (${titulosPeriodo[periodo] || 'Período'})</h3>
-    <p>Taxa de atividades concluídas em relação ao total planejado:</p>
+    <h2>Progresso de Execução</h2>
     <p>
-      <strong>Progresso: ${percentual}%</strong><br>
-      <progress value="${percentual}" max="100">${percentual}%</progress>
+      <strong>${concluidas}</strong> de <strong>${total}</strong> atividade(s) concluída(s)
+      (<strong>${percentual}%</strong>) • Tempo total planejado: <strong>${formatarHoras(minutosTotais)}</strong>
     </p>
-    <p><small>${concluidas} de ${total} atividades foram concluídas com sucesso.</small></p>
+    <progress value="${percentual}" max="100" style="width: 100%; height: 18px;">${percentual}%</progress>
   `;
 }
 
-/**
- * Calcula a duração em horas decimais entre dois horários "HH:MM".
- */
-function calcularHoras(horaInicio, horaFim) {
-  if (!horaInicio || !horaFim) return 0;
-  const [h1, m1] = horaInicio.split(':').map(Number);
-  const [h2, m2] = horaFim.split(':').map(Number);
-  const diffMinutos = (h2 * 60 + m2) - (h1 * 60 + m1);
-  return diffMinutos > 0 ? diffMinutos / 60 : 0;
-}
+function renderizarTabelaCategorias(atividades, categorias) {
+  const secao = document.querySelector('section[aria-labelledby="titulo-relatorio-categorias"]');
+  if (!secao) return;
 
-/**
- * Formata horas decimais em string legível (ex: "9h 30min").
- */
-function formatarHoras(horasDecimais) {
-  const horas = Math.floor(horasDecimais);
-  const minutos = Math.round((horasDecimais - horas) * 60);
-  if (minutos === 0) return `${horas}h 00min`;
-  return `${horas}h ${minutos < 10 ? '0' : ''}${minutos}min`;
-}
-
-/**
- * Renderiza a tabela de distribuição de tempo por categoria.
- */
-function renderizarRelatorioCategorias(lista) {
-  const sectionCategoria = document.querySelector('section[aria-labelledby="titulo-relatorio-categorias"]');
-  if (!sectionCategoria) return;
-
-  const tbody = sectionCategoria.querySelector('tbody');
-  const tfoot = sectionCategoria.querySelector('tfoot');
+  const tbody = secao.querySelector('tbody');
+  const tfoot = secao.querySelector('tfoot');
   if (!tbody) return;
 
-  const acumulador = {
-    'trabalho': { rotulo: 'Trabalho', horas: 0 },
-    'estudos': { rotulo: 'Estudos / Projetos', horas: 0 },
-    'saude': { rotulo: 'Saúde / Lazer', horas: 0 },
-  };
+  const mapa = new Map();
+  categorias.forEach((cat) => {
+    mapa.set(cat.slug, {
+      nome: cat.nome,
+      cor: cat.cor || '#2563eb',
+      minutos: 0
+    });
+  });
 
-  lista.forEach(item => {
-    const duracao = calcularHoras(item.horaInicio, item.horaFim);
-    if (acumulador[item.categoria]) {
-      acumulador[item.categoria].horas += duracao;
+  let minutosTotaisGeral = 0;
+
+  atividades.forEach((atividade) => {
+    const minutos = calcularDuracaoMinutos(atividade.horaInicio, atividade.horaFim);
+    minutosTotaisGeral += minutos;
+
+    const slug = atividade.categoria || 'outros';
+    if (!mapa.has(slug)) {
+      mapa.set(slug, {
+        nome: atividade.categoriaRotulo || slug,
+        cor: '#64748b',
+        minutos: 0
+      });
     }
+    mapa.get(slug).minutos += minutos;
   });
 
-  const totalHorasGeral = Object.values(acumulador).reduce((acc, cat) => acc + cat.horas, 0);
+  const linhas = Array.from(mapa.values());
 
-  let htmlBody = '';
-  Object.keys(acumulador).forEach(chave => {
-    const cat = acumulador[chave];
-    const proporcao = totalHorasGeral > 0 ? (cat.horas / totalHorasGeral) : 0;
-    const percentualTexto = (proporcao * 100).toFixed(1) + '%';
+  tbody.innerHTML = linhas
+    .map((item) => {
+      const percentual =
+        minutosTotaisGeral > 0 ? Math.round((item.minutos / minutosTotaisGeral) * 100) : 0;
 
-    htmlBody += `
-      <tr>
-        <th scope="row">${cat.rotulo}</th>
-        <td>${formatarHoras(cat.horas)}</td>
-        <td>${percentualTexto}</td>
-        <td>
-          <meter value="${proporcao.toFixed(3)}" min="0" max="1">${percentualTexto}</meter>
-        </td>
-      </tr>
-    `;
-  });
-
-  tbody.innerHTML = htmlBody;
+      return `
+        <tr>
+          <td>${escaparHtml(item.nome)}</td>
+          <td>${formatarHoras(item.minutos)}</td>
+          <td>${percentual}%</td>
+          <td>
+            <div style="background: #e2e8f0; border-radius: 999px; height: 10px; width: 100%; overflow: hidden;">
+              <div style="width: ${percentual}%; background: ${escaparHtml(item.cor)}; height: 100%;"></div>
+            </div>
+          </td>
+        </tr>
+      `;
+    })
+    .join('');
 
   if (tfoot) {
     tfoot.innerHTML = `
       <tr>
         <th scope="row">Total Geral</th>
-        <td><strong>${formatarHoras(totalHorasGeral)}</strong></td>
-        <td><strong>100%</strong></td>
-        <td></td>
+        <td><strong>${formatarHoras(minutosTotaisGeral)}</strong></td>
+        <td><strong>${minutosTotaisGeral > 0 ? '100%' : '0%'}</strong></td>
+        <td>-</td>
       </tr>
     `;
   }
 }
 
-/**
- * Renderiza a tabela de resumo por status.
- */
-function renderizarRelatorioStatus(lista) {
-  const sectionStatus = document.querySelector('section[aria-labelledby="titulo-status-resumo"]');
-  if (!sectionStatus) return;
+function renderizarTabelaStatus(atividades) {
+  const secao = document.querySelector('section[aria-labelledby="titulo-status-resumo"]');
+  if (!secao) return;
 
-  const tbody = sectionStatus.querySelector('tbody');
+  const tbody = secao.querySelector('tbody');
   if (!tbody) return;
 
-  const total = lista.length;
-  const concluidos = lista.filter(i => i.status === 'concluido').length;
-  const emAndamento = lista.filter(i => i.status === 'em_andamento').length;
-  const pendentes = lista.filter(i => i.status === 'pendente').length;
+  const total = atividades.length;
+  const grupos = [
+    { chave: 'pendente', rotulo: 'Pendente' },
+    { chave: 'em_andamento', rotulo: 'Em andamento' },
+    { chave: 'concluido', rotulo: 'Concluído' }
+  ];
 
-  const pConcluido = total > 0 ? Math.round((concluidos / total) * 100) : 0;
-  const pAndamento = total > 0 ? Math.round((emAndamento / total) * 100) : 0;
-  const pPendente = total > 0 ? Math.round((pendentes / total) * 100) : 0;
+  tbody.innerHTML = grupos
+    .map((grupo) => {
+      const qtd = atividades.filter((a) => a.status === grupo.chave).length;
+      const proporcao = total > 0 ? Math.round((qtd / total) * 100) : 0;
 
-  tbody.innerHTML = `
-    <tr>
-      <th scope="row">Concluído</th>
-      <td>${concluidos}</td>
-      <td>${pConcluido}%</td>
-    </tr>
-    <tr>
-      <th scope="row">Em Andamento</th>
-      <td>${emAndamento}</td>
-      <td>${pAndamento}%</td>
-    </tr>
-    <tr>
-      <th scope="row">Pendente</th>
-      <td>${pendentes}</td>
-      <td>${pPendente}%</td>
-    </tr>
-  `;
+      return `
+        <tr>
+          <td>${grupo.rotulo}</td>
+          <td>${qtd}</td>
+          <td>${proporcao}%</td>
+        </tr>
+      `;
+    })
+    .join('');
 }
+
+export async function atualizarRelatorios() {
+  try {
+    const [todasAtividades, categorias] = await Promise.all([
+      listarAtividades(),
+      listarCategorias().catch(() => CATEGORIAS_PADRAO)
+    ]);
+
+    const selectPeriodo = document.getElementById('filtro-periodo');
+    const periodoSelecionado = selectPeriodo ? selectPeriodo.value : 'semana';
+
+    const atividadesFiltradas = filtrarPorPeriodo(todasAtividades, periodoSelecionado);
+
+    renderizarCardProgresso(atividadesFiltradas);
+    renderizarTabelaCategorias(atividadesFiltradas, categorias);
+    renderizarTabelaStatus(atividadesFiltradas);
+  } catch (erro) {
+    console.error('Erro ao atualizar relatórios:', erro);
+    const cardProgresso = document.getElementById('card-progresso');
+    if (cardProgresso) {
+      cardProgresso.innerHTML = `<p>Não foi possível carregar os relatórios: ${escaparHtml(erro.message)}</p>`;
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await atualizarRelatorios();
+
+  const selectPeriodo = document.getElementById('filtro-periodo');
+  if (selectPeriodo) {
+    selectPeriodo.addEventListener('change', atualizarRelatorios);
+  }
+});
